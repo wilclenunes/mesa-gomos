@@ -126,10 +126,12 @@ def tray_floor(parent,zc):
     rr=Rc-0.0015;pts=[]
     for k in range(25):
         a=-AH+2*AH*k/24;pts.append((rr*math.sin(a),-rr*math.cos(a)))
-    pts+= [(XW-0.0035,YB),(-(XW-0.0035),YB)]
+    pts+= [(XW-0.0145,YB),(-(XW-0.0145),YB)]
     th=0.006;vs=[(x,y,zc+th/2) for x,y in pts]+[(x,y,zc-th/2) for x,y in pts];n=len(pts);fs=[tuple(range(n)),tuple(range(2*n-1,n-1,-1))]
     for k in range(n):fs.append((k,(k+1)%n,n+(k+1)%n,n+k))
     me=make('floor',vs,fs,None,interior,smooth=False);auto_uv(me);return obj('piso',me,parent)
+steel,_,sbs=mk('steel');sbs.inputs['Base Color'].default_value=srgb('#B8BBC0');sbs.inputs['Metallic'].default_value=1;sbs.inputs['Roughness'].default_value=0.33
+blk,_,kbs=mk('slide_dark');kbs.inputs['Base Color'].default_value=srgb('#1E1E1F');kbs.inputs['Roughness'].default_value=0.5
 drums=[];drawers=[]
 yc0=BASE+(D-1)*(H+GAP)+H/2
 for d in range(D):
@@ -143,8 +145,15 @@ for d in range(D):
         o=obj(f'rib_{d}_{i}',variants[(d*7+i*5+i//3)%6],dw if abs(ip)<=4 else dr);o.rotation_euler[2]=i*STEP
     k=obj(f'knob{d}',kme,dw,(0,-(R+0.001),0.004));k.rotation_euler[0]=math.pi/2
     tray_floor(dw,-H/2+0.006)
-    for sgn in(-1,1):box(f'lado{d}_{sgn}',(0.006,YB+YF-0.003,0.115),(sgn*(XW-0.0035),(YB-YF)/2,-H/2+0.003+0.0575),dw)
-    box(f'fundo{d}',(2*(XW-0.0035),0.006,0.115),(0,YB,-H/2+0.003+0.0575),dw)
+    for sgn in(-1,1):box(f'lado{d}_{sgn}',(0.006,YB+YF-0.003,0.115),(sgn*(XW-0.0145),(YB-YF)/2,-H/2+0.003+0.0575),dw)
+    box(f'fundo{d}',(2*(XW-0.0145),0.006,0.115),(0,YB,-H/2+0.003+0.0575),dw)
+        # corrediças de esferas (3 elementos): fixa na parede, intermédia (anda a meio da distância) e a da gaveta
+    for sgn in(-1,1):
+        zc=-H/2+0.003+0.0575;L=0.22
+        box(f'slide_fixa{d}_{sgn}',(0.0016,L,0.032),(sgn*(XW+0.0007),0,zc),dr).data.materials[0]=steel
+        box(f'slide_mid{d}_{sgn}',(0.0016,L,0.030),(sgn*(XW-0.0036),0,zc),dr).data.materials[0]=steel
+        box(f'slide_int{d}_{sgn}',(0.0016,L,0.028),(sgn*(XW-0.0079),0,zc),dw).data.materials[0]=steel
+        box(f'slide_esf{d}_{sgn}',(0.0030,L-0.01,0.004),(sgn*(XW-0.0018),0,zc),dr).data.materials[0]=blk
     disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
     if d>0:
         v,f=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004));obj(f'band{d}',make('band',v,f,mat=lac),root,(0,0,yb+H+GAP/2))

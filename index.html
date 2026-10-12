@@ -333,7 +333,7 @@ function init3D(){
   contact.rotation.x=-Math.PI/2;contact.position.y=0.001;scene.add(contact);
 
   // modelo 3D feito no Blender (mesa.glb, incluído em modelo-3d.js para abrir sem servidor)
-  const drums=[],knobs=[],H=0.152;
+  const drums=[],knobs=[],mids=[],H=0.152;
   const ringMat=new THREE.MeshPhysicalMaterial({roughness:0.28,clearcoat:1,clearcoatRoughness:0.15,envMapIntensity:0.6});
   ringMats.push(ringMat);
   function onModel(gltf){
@@ -351,6 +351,7 @@ function init3D(){
       const n=o.name;let m;
       if((m=/^rib_(\d+)_(\d+)$/.exec(n))){o.userData={d:+m[1],i:+m[2],anim:null,q:o.quaternion.clone()};ribMeshes.push(o);}
       else if((m=/^knob(\d+)$/.exec(n))){o.userData.d=+m[1];knobs.push(o);}
+      else if((m=/^slide_mid(\d+)_/.exec(n))){o.userData.d=+m[1];mids.push(o);}
     });
     root.traverse(o=>{const m=/^drawer(\d+)$/.exec(o.name);if(m){o.userData={d:+m[1],open:0,target:0};drums[+m[1]]=o;}});
     FABRICS.forEach(f=>{
@@ -403,6 +404,7 @@ function init3D(){
       const u=g.userData;u.open+=(u.target-u.open)*0.14;
       g.position.z=0.19*u.open*u.open*(3-2*u.open);
     });
+    mids.forEach(m=>{const g=drums[m.userData.d];if(g)m.position.z=g.position.z/2;});
   }
   const drawersBtn=document.getElementById("drawers");
   function syncDrawers(){const any=drums.some(g=>g.userData.target);drawersBtn.setAttribute("aria-pressed",any);drawersBtn.textContent=any?"Fechar gavetas":"Abrir gavetas";}
