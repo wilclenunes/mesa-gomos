@@ -19,7 +19,7 @@ e diz o que mudaste e porquê antes de entrar em detalhe técnico.
 - Para regenerar: `pip install bpy numpy pillow`, correr `python tex.py` e `python build.py 96 render` dentro de `blender/`, e voltar a converter `mesa.glb` para base64 em `modelo-3d.js`.
 - 13 tecidos reais (fotografias do Wilcle) em `tecidos-3d.js`, mais o bouclé natural. Ainda sem referências oficiais dos tecidos: pedir ao Wilcle.
 - Visual inspirado num vídeo de referência (hero escuro que toma a cor do tecido, título Montserrat, bolinhas de tecido).
-- Acabamentos (madeiras, lavados, lacados) mudam aros, base e interior das gavetas ao mesmo tempo; pedra do tampo à escolha (Carrara, Calacatta Gold, etc.), tampo maciço com 20 mm assente sobre um aro. Texturas geradas por `blender/acabamentos.py` → `acabamentos-3d.js`.
+- Acabamentos (madeiras, lavados, lacados) mudam aros, base e interior das gavetas ao mesmo tempo; pedra do tampo à escolha (Carrara, Calacatta Gold, etc.), tampo maciço com 20 mm assente diretamente sobre os gomos (sem aro). Texturas geradas por `blender/acabamentos.py` → `acabamentos-3d.js`.
 - Há também animação de tirar/pôr gomo, gavetas que abrem uma a uma (Cima, Meio, Baixo) ou todas, também ao toque no puxador e pedido de orçamento (código + link).
 - Toque num gomo pinta-o; modo "Gaveta inteira" pinta a gaveta; composições rápidas; cor dos aros.
 - Lista de gomos necessários por tecido. Configuração guardada no `localStorage` do navegador.

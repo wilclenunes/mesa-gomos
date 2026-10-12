@@ -154,8 +154,8 @@ for d in range(D):
         box(f'slide_mid{d}_{sgn}',(0.0016,L,0.030),(sgn*(XW-0.0036),0,zc),dr).data.materials[0]=steel
         box(f'slide_int{d}_{sgn}',(0.0016,L,0.028),(sgn*(XW-0.0079),0,zc),dw).data.materials[0]=steel
         box(f'slide_esf{d}_{sgn}',(0.0030,L-0.01,0.004),(sgn*(XW-0.0018),0,zc),dr).data.materials[0]=blk
-    disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
-    if True:  # aro lacado/madeira também por baixo do tampo
+    if d>0:disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
+    if d>0:
         v,f,u_=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004),96,True,0.23,0.2);obj(f'band{d}',make('band',v,f,u_,lac),root,(0,0,yb+H+GAP/2))
 disc('chao',Rc,BASE-0.003,BASE+0.002,root)
 # tampo: pedra maciça com 20 mm de espessura, arestas ligeiramente arredondadas, assente sobre o aro de cima
@@ -167,7 +167,7 @@ prof.append((0,ST))
 sv,sf=lathe(prof,128)
 suv=[(0.5+x/(2*SR),0.5+y/(2*SR)) for (x,y,z) in sv]
 mar.use_backface_culling=False
-yStone=yc0+H/2+GAP/2+(GAP-0.002)/2
+yStone=yc0+H/2+0.0015  # a pedra assenta logo por cima dos gomos, sem aro
 obj('marble',make('marble',sv,sf,suv,mar),root,(0,0,yStone))
 def set_open(v):
     for dw in drawers:dw.location.y=-TRAVEL*v
