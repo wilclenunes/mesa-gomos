@@ -17,6 +17,8 @@ e diz o que mudaste e porquê antes de entrar em detalhe técnico.
 - 3D com three.js r128 (carregado de CDN) + OrbitControls + GLTFLoader.
 - O modelo da mesa vem do Blender: `blender/build.py` (+ `tex.py` para as texturas) gera `mesa.glb` e `mesa.blend`; `modelo-3d.js` é o GLB em base64 (para abrir `index.html` sem servidor). 30 gomos por gaveta (estimado a partir das fotos), 90 no total.
 - Para regenerar: `pip install bpy numpy pillow`, correr `python tex.py` e `python build.py 96 render` dentro de `blender/`, e voltar a converter `mesa.glb` para base64 em `modelo-3d.js`.
+- 13 tecidos reais (fotografias do Wilcle) em `tecidos-3d.js`, mais o bouclé natural. Ainda sem referências oficiais dos tecidos: pedir ao Wilcle.
+- Visual inspirado num vídeo de referência (hero escuro que toma a cor do tecido, título Montserrat, bolinhas de tecido).
 - Há também animação de tirar/pôr gomo, gavetas que abrem ao toque no puxador e pedido de orçamento (código + link).
 - Toque num gomo pinta-o; modo "Gaveta inteira" pinta a gaveta; composições rápidas; cor dos aros.
 - Lista de gomos necessários por tecido. Configuração guardada no `localStorage` do navegador.

@@ -5,130 +5,170 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Configurador de Gomos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Montserrat:wght@500;600;700&display=swap">
 <style>
-/* Layout: estúdio 3D à esquerda (fundo de fotografia de produto), painel de tecidos à direita; empilha no telemóvel */
+/* Layout: um "palco" escuro que toma a cor do tecido escolhido; texto à esquerda, tecidos à direita, mesa 3D ao centro.
+   Por baixo, painéis com o resto das opções. No telemóvel tudo empilha. */
+@property --hi{syntax:"<color>";inherits:true;initial-value:#a9794f}
+@property --lo{syntax:"<color>";inherits:true;initial-value:#3a2416}
 :root{
-  --bg:#ECEBE8; --stage:#F4F3F0; --panel:#FFFFFF; --fg:#24211E; --muted:#6F6A63;
-  --line:#DEDAD3; --accent:#8E4A2E; --chip:#F2F0EC;
-  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
-  --body:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --hi:#a9794f; --lo:#3a2416; --ink:#fff; --soft:rgba(255,255,255,.72); --mute:rgba(255,255,255,.5);
+  --glass:rgba(255,255,255,.07); --glass2:rgba(255,255,255,.13); --line:rgba(255,255,255,.16); --pill:#fff; --pill-ink:#161311;
+  --display:"Montserrat", "Segoe UI", system-ui, sans-serif;
+  --body:"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#1B1A18; --stage:#2A2826; --panel:#252321; --fg:#EFEBE5; --muted:#A39D94;
-  --line:#3A3734; --accent:#D98A63; --chip:#33302D; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#1B1A18; --stage:#2A2826; --panel:#252321; --fg:#EFEBE5; --muted:#A39D94;
-  --line:#3A3734; --accent:#D98A63; --chip:#33302D; color-scheme:dark}
-
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:24px 48px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:18px}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1;margin:0;text-wrap:balance}
-h1 em{color:var(--accent)}
-.lede{color:var(--muted);margin:0;max-width:48ch}
-.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
-@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
-.stage{background:radial-gradient(120% 90% at 50% 20%, var(--panel) 0%, var(--stage) 70%);border-radius:18px;position:relative;overflow:hidden}
-#view{display:block;width:100%;aspect-ratio:1/1.02;max-width:100%;touch-action:none;cursor:grab}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(120% 80% at 50% 0%,var(--hi),var(--lo)) fixed;background-color:var(--lo);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;transition:--hi .7s,--lo .7s}
+.page{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:20px 56px;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit}
+.hero{position:relative;border-radius:28px;overflow:hidden;min-height:680px;
+  background:linear-gradient(160deg,rgba(10,8,7,.5),rgba(10,8,7,.72)),radial-gradient(90% 90% at 50% 40%,var(--hi),var(--lo));
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.08)}
+#view{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #view:active{cursor:grabbing}
-.tools{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;pointer-events:none}
-.tools > *{pointer-events:auto}
-.hint{font-size:12.5px;color:var(--muted);background:color-mix(in srgb,var(--panel) 80%,transparent);padding:6px 10px;border-radius:999px;margin:0}
-.pill{border:1px solid var(--line);background:var(--panel);color:var(--fg);font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.pill[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
-.fallback{padding:40px 20px;text-align:center;color:var(--muted)}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:20px}
-.panel h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px}
-.sw{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:0;cursor:pointer;color:var(--fg);font:inherit;font-size:11.5px;line-height:1.2;text-align:center}
-.sw i{width:44px;height:44px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
-.sw[aria-pressed="true"] i{outline:2px solid var(--fg);outline-offset:3px}
-.sw:focus-visible i{outline:2px solid var(--accent);outline-offset:3px}
-.seg{display:flex;background:var(--chip);border-radius:999px;padding:3px;gap:3px}
-.seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:600;font-size:13px;padding:8px 10px;border-radius:999px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.over{position:relative;z-index:1;pointer-events:none}
+.over *{pointer-events:auto}
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:22px 28px}
+.logo{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.logo b{display:grid;place-items:center;width:26px;height:26px;border:1.5px solid #fff;border-radius:6px;font-size:11px;letter-spacing:0}
+nav.pillnav{display:flex;gap:4px;padding:5px;border-radius:999px;background:var(--glass2);backdrop-filter:blur(10px)}
+nav.pillnav a{color:var(--soft);text-decoration:none;font-size:12.5px;font-weight:500;padding:8px 16px;border-radius:999px}
+nav.pillnav a:first-child{background:var(--pill);color:var(--pill-ink);font-weight:700}
+nav.pillnav a:not(:first-child):hover{color:#fff}
+.acts{display:flex;justify-content:flex-end;gap:8px}
+.ic{border:1px solid var(--line);background:var(--glass);border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px)}
+.ic[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
+.cols{display:grid;grid-template-columns:minmax(0,340px) 1fr minmax(0,300px);gap:24px;padding:24px 28px 0;min-height:520px;align-items:start}
+.copy h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,3.4vw,2.9rem);line-height:1.08;margin:6px 0 16px;text-wrap:balance;letter-spacing:-.01em}
+.copy p{color:var(--soft);margin:0 0 22px;max-width:36ch}
+.arrows{display:flex;gap:8px}
+.arrows button{width:34px;height:34px;border-radius:50%;border:0;background:var(--glass2);cursor:pointer;font-size:16px;line-height:1}
+.arrows button:hover{background:var(--pill);color:var(--pill-ink)}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--pill);color:var(--pill-ink);border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:13px;text-decoration:none;cursor:pointer}
+.side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+.fname{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:1.1}
+.fref{color:var(--mute);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.lab{font-size:12.5px;color:var(--soft);margin:0}
+.swatches{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px;max-width:300px}
+.sw{width:38px;height:38px;border-radius:50%;border:0;padding:0;background:none;cursor:pointer;position:relative}
+.sw i{position:absolute;inset:0;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);background-position:center}
+.sw[aria-pressed="true"]::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #fff}
+.sw:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:50%}
+.seg{display:flex;background:var(--glass2);border-radius:999px;padding:4px;gap:2px;backdrop-filter:blur(8px)}
+.seg button{border:0;background:none;color:var(--soft);font-weight:500;font-size:12.5px;padding:8px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);font-weight:700}
+.bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:0 28px 24px;position:absolute;left:0;right:0;bottom:0}
+.tag{font-family:var(--display);font-weight:500;font-size:15px;text-align:center;line-height:1.35;margin:0 auto;color:#fff}
+.hint{color:var(--mute);font-size:12.5px;margin:0;min-width:140px}
+.nextth{width:76px;height:76px;border-radius:18px;border:1px solid var(--line);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 24px rgba(0,0,0,.4);overflow:hidden;padding:0;position:relative}
+.nextth span{position:absolute;inset:auto 0 0 0;font-size:10px;background:rgba(0,0,0,.45);padding:2px 0;text-align:center}
+.fallback{padding:60px 20px;text-align:center;color:var(--soft)}
+.more{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{font-family:var(--display);font-weight:600;font-size:15px;margin:0;letter-spacing:.01em}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--chip);color:var(--fg);font:inherit;font-size:13px;font-weight:500;padding:7px 12px;border-radius:999px;cursor:pointer}
-.chip:hover{border-color:var(--accent)}
-.chip:focus-visible,.seg button:focus-visible,.pill:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.rings .chip{display:flex;align-items:center;gap:7px}
-.rings .chip i{width:14px;height:14px;border-radius:50%;display:block}
-.rings .chip[aria-pressed="true"]{border-color:var(--fg);background:var(--panel)}
-.bill{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.chip{border:1px solid var(--line);background:var(--glass);color:#fff;font-size:13px;font-weight:500;padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip:hover{background:var(--glass2)}
+.chip:focus-visible,.seg button:focus-visible,.ic:focus-visible,.cta:focus-visible,.arrows button:focus-visible,.nextth:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.rings .chip{display:flex;align-items:center;gap:8px}
+.rings .chip i{width:14px;height:14px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.rings .chip[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
+.bill{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .bill li{display:flex;align-items:center;gap:10px;font-size:14px}
-.bill li i{width:14px;height:14px;border-radius:4px;display:block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.bill li i{width:18px;height:18px;border-radius:5px;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
 .bill li span{flex:1}
-.bill li b{font-variant-numeric:tabular-nums;font-weight:600}
-.total{font-size:12px;color:var(--muted);margin-top:6px}
-.code{width:100%;font:inherit;font-size:12px;font-variant-numeric:tabular-nums;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--chip);color:var(--fg)}
-.reset{align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
+.bill li b{font-variant-numeric:tabular-nums;font-weight:700}
+.total{font-size:12.5px;color:var(--mute);margin:0}
+.code{width:100%;font:inherit;font-size:12px;font-variant-numeric:tabular-nums;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.25);color:#fff}
+.reset{align-self:flex-start;background:none;border:0;color:var(--mute);font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
+@media (max-width:980px){
+  .hero{min-height:0;display:flex;flex-direction:column}
+  #view{position:relative;order:3;height:min(92vw,520px);inset:auto}
+  .top{grid-template-columns:1fr auto;padding:18px 18px 4px}
+  nav.pillnav{display:none}
+  .cols{display:flex;flex-direction:column;padding:12px 18px 0;min-height:0;gap:20px}
+  .over.cols{order:1}
+  .side{align-items:flex-start;text-align:left}
+  .swatches{justify-content:flex-start}
+  .bottom{position:static;order:4;padding:0 18px 20px;flex-wrap:wrap;justify-content:center}
+  .tag{order:-1;width:100%}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}body{transition:none}}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header>
-    <h1>Mesa de cabeceira <em>à tua maneira</em></h1>
-    <p class="lede">Cada gomo encaixa e desencaixa. Escolhe um tecido e toca nos gomos para os trocar. Arrasta para rodar, aperta para aproximar.</p>
-  </header>
-
-  <div class="grid">
-    <section class="stage" aria-label="Pré-visualização 3D da mesa">
-      <canvas id="view" aria-label="Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos"></canvas>
-      <div class="tools">
-        <p class="hint" id="hint">90 gomos · 30 por gaveta</p>
-        <span style="display:flex;gap:8px"><button class="pill" id="drawers" aria-pressed="false">Abrir gavetas</button><button class="pill" id="spin" aria-pressed="false">Rodar sozinha</button></span>
+<div class="page">
+  <section class="hero" aria-label="Pré-visualização 3D da mesa">
+    <canvas id="view" aria-label="Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos"></canvas>
+    <header class="over top">
+      <div class="logo"><b>B</b>Bocote</div>
+      <nav class="pillnav" aria-label="Secções"><a href="#topo">Mesa</a><a href="#composicoes">Composições</a><a href="#orcamento">Orçamento</a></nav>
+      <div class="acts">
+        <button class="ic" id="drawers" aria-pressed="false">Abrir gavetas</button>
+        <button class="ic" id="spin" aria-pressed="false">Rodar sozinha</button>
       </div>
-    </section>
-
-    <aside class="panel">
-      <div>
-        <h2>Tecido</h2>
+    </header>
+    <div class="over cols" id="topo">
+      <div class="copy">
+        <div class="arrows"><button id="prevF" aria-label="Tecido anterior">‹</button><button id="nextF" aria-label="Tecido seguinte">›</button></div>
+        <h1>Mesa de cabeceira à tua maneira</h1>
+        <p>Cada gomo encaixa e desencaixa. Escolhe um tecido e toca nos gomos para os trocar. Arrasta para rodar, aperta para aproximar.</p>
+        <a class="cta" href="#orcamento">Pedir orçamento <span aria-hidden="true">›</span></a>
+      </div>
+      <div></div>
+      <aside class="side">
+        <div><div class="fname" id="fname"></div><div class="fref" id="fref"></div></div>
+        <p class="lab">Escolhe o tecido</p>
         <div class="swatches" id="swatches"></div>
-      </div>
-      <div>
-        <h2>Pincel</h2>
+        <p class="lab">Pincel</p>
         <div class="seg" role="group" aria-label="Modo de pintura">
           <button id="mGomo" aria-pressed="true">Um gomo</button>
           <button id="mGaveta" aria-pressed="false">Gaveta inteira</button>
           <button id="mTirar" aria-pressed="false">Tirar e pôr</button>
         </div>
+      </aside>
+    </div>
+    <div class="over bottom">
+      <p class="hint" id="hint">90 gomos · 30 por gaveta</p>
+      <p class="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
+      <button class="nextth" id="nextTh" aria-label="Ver o tecido seguinte"><span id="nextName"></span></button>
+    </div>
+  </section>
+
+  <div class="more">
+    <section class="card" id="composicoes">
+      <h2>Composições rápidas</h2>
+      <div class="chips">
+        <button class="chip" data-p="liso">Liso</button>
+        <button class="chip" data-p="riscas">Alternado</button>
+        <button class="chip" data-p="faixa">Faixa frontal</button>
+        <button class="chip" data-p="gavetas">Uma cor por gaveta</button>
+        <button class="chip" data-p="degrade">Degradê</button>
+        <button class="chip" data-p="aleatorio">Aleatório</button>
       </div>
-      <div>
-        <h2>Composições rápidas</h2>
-        <div class="chips">
-          <button class="chip" data-p="liso">Liso</button>
-          <button class="chip" data-p="riscas">Alternado</button>
-          <button class="chip" data-p="faixa">Faixa frontal</button>
-          <button class="chip" data-p="gavetas">Uma cor por gaveta</button>
-          <button class="chip" data-p="degrade">Degradê</button>
-          <button class="chip" data-p="aleatorio">Aleatório</button>
-        </div>
-      </div>
-      <div class="rings">
-        <h2>Aros e base</h2>
-        <div class="chips" id="rings"></div>
-      </div>
-      <div>
-        <h2>Gomos necessários</h2>
-        <ul class="bill" id="bill"></ul>
-        <p class="total" id="total"></p>
-      </div>
-      <div>
-        <h2>Pedir orçamento</h2>
-        <p class="total" style="margin:0 0 10px">Envia-nos este código ou link e ficamos com a tua configuração exata.</p>
-        <input id="code" class="code" readonly aria-label="Código da configuração">
-        <div class="chips" style="margin-top:10px">
-          <button class="chip" id="copyReq">Copiar pedido</button>
-          <button class="chip" id="copyLink">Copiar link</button>
-          <button class="chip" id="share" hidden>Partilhar</button>
-        </div>
-        <p class="total" id="copied" role="status" aria-live="polite"></p>
-      </div>
+      <h2 style="margin-top:6px">Aros e base</h2>
+      <div class="chips rings" id="rings"></div>
+    </section>
+    <section class="card">
+      <h2>Gomos necessários</h2>
+      <ul class="bill" id="bill"></ul>
+      <p class="total" id="total"></p>
       <button class="reset" id="reset">Voltar à versão original</button>
-    </aside>
+    </section>
+    <section class="card" id="orcamento">
+      <h2>Pedir orçamento</h2>
+      <p class="total">Envia-nos este código ou link e ficamos com a tua configuração exata.</p>
+      <input id="code" class="code" readonly aria-label="Código da configuração">
+      <div class="chips">
+        <button class="chip" id="copyReq">Copiar pedido</button>
+        <button class="chip" id="copyLink">Copiar link</button>
+        <button class="chip" id="share" hidden>Partilhar</button>
+      </div>
+      <p class="total" id="copied" role="status" aria-live="polite"></p>
+    </section>
   </div>
 </div>
 
@@ -136,31 +176,53 @@ h1 em{color:var(--accent)}
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="modelo-3d.js"></script>
+<script src="tecidos-3d.js"></script>
 <script>
 /* ---------- dados ---------- */
 const FABRICS=[
   {id:"natural",n:"Bouclé natural",c:"#EAE1D3"},
-  {id:"areia",n:"Areia",c:"#CDB99C"},
-  {id:"caramelo",n:"Caramelo",c:"#B07446"},
-  {id:"terracota",n:"Terracota",c:"#9E4F34"},
-  {id:"rosa",n:"Rosa velho",c:"#C69A90"},
-  {id:"salvia",n:"Sálvia",c:"#97A188"},
-  {id:"oliva",n:"Oliva",c:"#6A6844"},
-  {id:"petroleo",n:"Azul petróleo",c:"#3C5961"},
-  {id:"grafite",n:"Grafite",c:"#4A4644"},
+  {id:"t01",n:"Castanho acinzentado",c:"#756052",ref:"Amostra 01"},
+  {id:"t02",n:"Vermelho",c:"#770714",ref:"Amostra 02"},
+  {id:"t03",n:"Roxo",c:"#34163E",ref:"Amostra 03"},
+  {id:"t04",n:"Preto",c:"#0B0B0B",ref:"Amostra 04"},
+  {id:"t05",n:"Terracota",c:"#93371A",ref:"Amostra 05"},
+  {id:"t06",n:"Verde garrafa",c:"#074B41",ref:"Amostra 06"},
+  {id:"t07",n:"Grafite",c:"#262626",ref:"Amostra 07"},
+  {id:"t08",n:"Mostarda",c:"#BD8126",ref:"Amostra 08"},
+  {id:"t09",n:"Castanho chocolate",c:"#6C554C",ref:"Amostra 09"},
+  {id:"t10",n:"Azul",c:"#43608B",ref:"Amostra 10"},
+  {id:"t11",n:"Verde musgo",c:"#3F5022",ref:"Amostra 11"},
+  {id:"t12",n:"Camelo",c:"#8F745D",ref:"Amostra 12"},
+  {id:"t13",n:"Bordeaux",c:"#832233",ref:"Amostra 13"},
 ];
 const RINGS=[{n:"Terracota",c:"#A64A2B"},{n:"Nogueira",c:"#4F3322"},{n:"Preto",c:"#1E1C1B"},{n:"Latão",c:"#B8955C",metal:true}];
 const N=30,D=3,STEP=2*Math.PI/N;
+const swStyle=f=>window.TECIDOS&&TECIDOS[f.id]?`background-color:${f.c};background-image:url(${TECIDOS[f.id]});background-size:300%`:`background-color:${f.c}`;
 const fab=id=>FABRICS.find(f=>f.id===id)||FABRICS[0];
 const fresh=()=>({ribs:Array.from({length:D},()=>Array(N).fill("natural")),ring:0});
-let st=fresh(),cur="terracota",mode="gomo";
-try{const s=JSON.parse(localStorage.getItem("gomos-3d-v2"));if(s&&s.ribs&&s.ribs.length===D&&s.ribs[0].length===N)st=s;}catch(e){}
-const save=()=>{try{localStorage.setItem("gomos-3d-v2",JSON.stringify(st))}catch(e){}};
+let st=fresh(),cur="t05",mode="gomo";
+try{const s=JSON.parse(localStorage.getItem("gomos-3d-v3"));if(s&&s.ribs&&s.ribs.length===D&&s.ribs[0].length===N&&s.ribs.flat().every(id=>FABRICS.some(f=>f.id===id)))st=s;}catch(e){}
+const save=()=>{try{localStorage.setItem("gomos-3d-v3",JSON.stringify(st))}catch(e){}};
 
 /* ---------- UI ---------- */
 const swEl=document.getElementById("swatches");
-function renderSw(){swEl.innerHTML=FABRICS.map(f=>`<button class="sw" data-f="${f.id}" aria-pressed="${f.id===cur}"><i style="background-color:${f.c}"></i>${f.n}</button>`).join("");}
+function tone(hex){
+  const n=parseInt(hex.slice(1),16),r=(n>>16&255)/255,g=(n>>8&255)/255,b=(n&255)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;
+  let h=0,sat=0;if(d){sat=d/(1-Math.abs(2*l-1));h=mx===r?((g-b)/d+6)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;}
+  sat=Math.min(0.9,sat*1.08);const hl=Math.max(0.36,Math.min(0.58,l*1.15+0.12));
+  return[`hsl(${h.toFixed(0)} ${(sat*100).toFixed(0)}% ${(hl*100).toFixed(0)}%)`,`hsl(${h.toFixed(0)} ${(sat*85).toFixed(0)}% ${(hl*45).toFixed(0)}%)`];
+}
+function renderSw(){
+  swEl.innerHTML=FABRICS.map(f=>`<button class="sw" data-f="${f.id}" aria-pressed="${f.id===cur}" aria-label="${f.n}" title="${f.n}"><i style="${swStyle(f)}"></i></button>`).join("");
+  const f=fab(cur),i=FABRICS.indexOf(f),nx=FABRICS[(i+1)%FABRICS.length];
+  document.getElementById("fname").textContent=f.n;
+  document.getElementById("fref").textContent=f.ref||"Bouclé da Bocote";
+  const th=document.getElementById("nextTh");th.style.cssText=swStyle(nx)+";background-size:cover";document.getElementById("nextName").textContent=nx.n;
+  const[hi,lo]=tone(f.c);document.documentElement.style.setProperty("--hi",hi);document.documentElement.style.setProperty("--lo",lo);
+}
 swEl.addEventListener("click",e=>{const b=e.target.closest(".sw");if(!b)return;cur=b.dataset.f;renderSw();});
+const stepF=k=>{cur=FABRICS[(FABRICS.findIndex(f=>f.id===cur)+k+FABRICS.length)%FABRICS.length].id;renderSw();};
+document.getElementById("prevF").onclick=()=>stepF(-1);document.getElementById("nextF").onclick=()=>stepF(1);document.getElementById("nextTh").onclick=()=>stepF(1);
 const mG=document.getElementById("mGomo"),mV=document.getElementById("mGaveta"),mT=document.getElementById("mTirar");
 function setMode(m){mode=m;mG.setAttribute("aria-pressed",m==="gomo");mV.setAttribute("aria-pressed",m==="gaveta");mT.setAttribute("aria-pressed",m==="tirar");}
 mG.onclick=()=>setMode("gomo");mV.onclick=()=>setMode("gaveta");mT.onclick=()=>setMode("tirar");
@@ -197,12 +259,12 @@ rEl.addEventListener("click",e=>{const b=e.target.closest("[data-r]");if(!b)retu
 function renderBill(){
   const cnt={};st.ribs.flat().forEach(id=>cnt[id]=(cnt[id]||0)+1);
   const rows=FABRICS.filter(f=>cnt[f.id]);
-  document.getElementById("bill").innerHTML=rows.map(f=>`<li><i style="background:${f.c}"></i><span>${f.n}</span><b>${cnt[f.id]}</b></li>`).join("");
+  document.getElementById("bill").innerHTML=rows.map(f=>`<li><i style="${swStyle(f)}"></i><span>${f.n}</span><b>${cnt[f.id]}</b></li>`).join("");
   codeEl.value=encode();copiedEl.textContent="";
   document.getElementById("total").textContent=`${rows.length} ${rows.length===1?"tecido":"tecidos"} · ${N*D} gomos · aros em ${RINGS[st.ring].n.toLowerCase()}`;
 }
 document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
-  const p=b.dataset.p,alt=cur==="natural"?"areia":"natural";
+  const p=b.dataset.p,alt=cur==="natural"?"t12":"natural";
   const others=FABRICS.filter(f=>f.id!==cur&&f.id!==alt).map(f=>f.id);
   st.ribs=st.ribs.map((row,d)=>row.map((_,i)=>{
     switch(p){
@@ -210,8 +272,8 @@ document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
       case"riscas":return i%2?cur:alt;
       case"faixa":return Math.cos(i*STEP)>.6?cur:alt;
       case"gavetas":return[cur,alt,others[2]][d];
-      case"degrade":{const seq=["natural","areia","caramelo","terracota"];return seq[Math.min(3,Math.floor(Math.abs(Math.sin(i*STEP/2))*4))];}
-      case"aleatorio":{const pool=[cur,alt,"areia","caramelo"];return pool[Math.floor(Math.random()*pool.length)];}
+      case"degrade":{const seq=["natural","t12","t08","t05"];return seq[Math.min(3,Math.floor(Math.abs(Math.sin(i*STEP/2))*4))];}
+      case"aleatorio":{const pool=[cur,alt,"t12","t08"];return pool[Math.floor(Math.random()*pool.length)];}
     }
   }));
   save();apply();
@@ -236,7 +298,7 @@ function init3D(){
   const camera=new THREE.PerspectiveCamera(28,1,0.05,20);
   camera.position.set(0.55,0.85,1.7);
   const controls=new THREE.OrbitControls(camera,canvas);
-  controls.target.set(0,0.25,0);
+  controls.target.set(0,0.27,0);
   controls.enableDamping=true;controls.dampingFactor=0.08;
   controls.enablePan=false;controls.minDistance=0.9;controls.maxDistance=3;
   controls.minPolarAngle=0.25;controls.maxPolarAngle=Math.PI/2-0.04;
@@ -261,7 +323,7 @@ function init3D(){
   const rim=new THREE.DirectionalLight(0xffffff,0.6);rim.position.set(1.6,1.2,-1.4);scene.add(rim);
 
   // chão: só a sombra + sombra de contacto suave
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(6,6),new THREE.ShadowMaterial({opacity:0.16}));
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(6,6),new THREE.ShadowMaterial({opacity:0.4}));
   floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
   const cs=document.createElement("canvas");cs.width=cs.height=256;
   const cg=cs.getContext("2d"),gr=cg.createRadialGradient(128,128,40,128,128,128);
@@ -292,15 +354,35 @@ function init3D(){
     });
     root.traverse(o=>{const m=/^drum(\d+)$/.exec(o.name);if(m){o.userData={d:+m[1],open:0,target:0};drums[+m[1]]=o;}});
     FABRICS.forEach(f=>{
-      const mt=fabricBase.clone();mt.color=new THREE.Color(f.c).convertSRGBToLinear();
-      mt.roughness=0.95;mt.metalness=0;mt.envMapIntensity=0.5;mt.normalScale.set(1.2,1.2);ribMat[f.id]=mt;
+      const mt=fabricBase.clone();mt.envMapIntensity=0.5;mt.metalness=0;
+      if(window.TECIDOS&&TECIDOS[f.id]){
+        // tecido real: fotografia como cor + relevo do tecido calculado a partir dela
+        mt.color=new THREE.Color(1,1,1);mt.roughness=0.9;mt.normalScale.set(1,1);mt.map=null;mt.normalMap=null;
+        const im=new Image();im.onload=()=>{
+          const S=im.width,c=document.createElement("canvas");c.width=c.height=S;const g=c.getContext("2d");g.drawImage(im,0,0);
+          const px=g.getImageData(0,0,S,S).data,h=new Float32Array(S*S);
+          for(let k=0;k<S*S;k++)h[k]=(px[k*4]*0.3+px[k*4+1]*0.59+px[k*4+2]*0.11)/255;
+          const n=g.createImageData(S,S),st=14;
+          for(let y=0;y<S;y++)for(let x=0;x<S;x++){
+            const dx=h[y*S+(x+1)%S]-h[y*S+(x+S-1)%S],dy=h[((y+1)%S)*S+x]-h[((y+S-1)%S)*S+x];
+            let nx=-dx*st,ny=dy*st,nz=1;const l=Math.hypot(nx,ny,nz);nx/=l;ny/=l;nz/=l;
+            const o=(y*S+x)*4;n.data[o]=(nx*.5+.5)*255;n.data[o+1]=(ny*.5+.5)*255;n.data[o+2]=(nz*.5+.5)*255;n.data[o+3]=255;
+          }
+          const nc=document.createElement("canvas");nc.width=nc.height=S;nc.getContext("2d").putImageData(n,0,0);
+          const mk=(src,srgb)=>{const t=new THREE.CanvasTexture(src);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1.7,1.7);t.anisotropy=aniso;if(srgb)t.encoding=THREE.sRGBEncoding;return t;};
+          mt.map=mk(c,true);mt.normalMap=mk(nc,false);mt.needsUpdate=true;
+        };im.src=TECIDOS[f.id];
+      }else{
+        mt.color=new THREE.Color(f.c).convertSRGBToLinear();mt.roughness=0.95;mt.normalScale.set(1.2,1.2);
+      }
+      ribMat[f.id]=mt;
     });
     apply();
   }
   const bin=atob(window.MESA_GLB),buf=new Uint8Array(bin.length);
   for(let k=0;k<bin.length;k++)buf[k]=bin.charCodeAt(k);
   new THREE.GLTFLoader().parse(buf.buffer,"",onModel,e=>{
-    document.querySelector(".stage").innerHTML='<p class="fallback">Não foi possível carregar o modelo 3D.</p>';
+    document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:"Não foi possível carregar o modelo 3D."}));
   });
 
   // animação: gomo sai, espera e volta a encaixar (a cor troca quando está fora)
@@ -367,7 +449,7 @@ function init3D(){
 
 renderSw();renderRings();
 try{init3D();}catch(err){
-  document.querySelector(".stage").innerHTML='<p class="fallback">Não foi possível abrir a vista 3D neste dispositivo. Experimenta noutro navegador.</p>';
+  document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:"Não foi possível abrir a vista 3D neste dispositivo. Experimenta noutro navegador."}));
 }
 apply();
 </script>
