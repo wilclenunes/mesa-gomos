@@ -155,21 +155,20 @@ for d in range(D):
         box(f'slide_int{d}_{sgn}',(0.0016,L,0.028),(sgn*(XW-0.0079),0,zc),dw).data.materials[0]=steel
         box(f'slide_esf{d}_{sgn}',(0.0030,L-0.01,0.004),(sgn*(XW-0.0018),0,zc),dr).data.materials[0]=blk
     disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
-    if d>0:
+    if True:  # aro lacado/madeira também por baixo do tampo
         v,f,u_=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004),96,True,0.23,0.2);obj(f'band{d}',make('band',v,f,u_,lac),root,(0,0,yb+H+GAP/2))
 disc('chao',Rc,BASE-0.003,BASE+0.002,root)
-yTop=yc0+H/2+GAP/2+0.003
-cv2,cf2,cu2=lathe(band_profile(Rc+0.002,0.022,Rc-0.020,0.006),96,True);obj('colar',make('colar',cv2,cf2,cu2,fabric),root,(0,0,yTop-0.003))
-verts=[];faces=[];uv=[];seg=96;MR=Rc-0.016;MT=0.014
-verts.append((0,0,MT/2));uv.append((0.5,0.5))
-for s_ in range(seg):
-    a=2*math.pi*s_/seg;x,y=MR*math.cos(a),MR*math.sin(a);verts.append((x,y,MT/2));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
-for s_ in range(seg):faces.append((0,1+s_,1+(s_+1)%seg))
-for s_ in range(seg):
-    a=2*math.pi*s_/seg;x,y=MR*math.cos(a),MR*math.sin(a);verts.append((x,y,-MT/2));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
-for s_ in range(seg):
-    a1=1+s_;a2=1+(s_+1)%seg;faces.append((a1,a1+seg,a2+seg,a2))
-obj('marble',make('marble',verts,faces,uv,mar),root,(0,0,yTop-0.004))
+# tampo: pedra maciça com 20 mm de espessura, arestas ligeiramente arredondadas, assente sobre o aro de cima
+SR,ST,SB=R,0.020,0.003
+prof=[(0,0),(SR-SB,0)]
+for k in range(1,7):a=-math.pi/2+k/6*math.pi/2;prof.append((SR-SB+SB*math.cos(a),SB+SB*math.sin(a)))
+for k in range(1,7):a=k/6*math.pi/2;prof.append((SR-SB+SB*math.cos(a),ST-SB+SB*math.sin(a)))
+prof.append((0,ST))
+sv,sf=lathe(prof,128)
+suv=[(0.5+x/(2*SR),0.5+y/(2*SR)) for (x,y,z) in sv]
+mar.use_backface_culling=False
+yStone=yc0+H/2+GAP/2+(GAP-0.002)/2
+obj('marble',make('marble',sv,sf,suv,mar),root,(0,0,yStone))
 def set_open(v):
     for dw in drawers:dw.location.y=-TRAVEL*v
 bpy.context.view_layer.update()

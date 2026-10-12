@@ -38,6 +38,8 @@ nav.pillnav a{color:var(--soft);text-decoration:none;font-size:12.5px;font-weigh
 nav.pillnav a:first-child{background:var(--pill);color:var(--pill-ink);font-weight:700}
 nav.pillnav a:not(:first-child):hover{color:#fff}
 .acts{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.dwg{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px}
+.dwg span{font-size:12.5px;color:var(--soft);margin-right:2px}
 .mid{display:flex;flex-direction:column;align-items:center;gap:12px}
 .grp{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.grp:last-child{margin-bottom:0}
 .grp h3{margin:0;font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
@@ -144,7 +146,7 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
       <div class="mid">
         <p class="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
         <div class="acts">
-          <button class="ic" id="drawers" aria-pressed="false">Abrir gavetas</button>
+          <div class="dwg" role="group" aria-label="Abrir gavetas"><span>Abrir</span><button class="ic" data-dw="0" aria-pressed="false">Cima</button><button class="ic" data-dw="1" aria-pressed="false">Meio</button><button class="ic" data-dw="2" aria-pressed="false">Baixo</button><button class="ic" data-dw="all" aria-pressed="false">Todas</button></div>
           <button class="ic" id="spin" aria-pressed="false">Rodar sozinha</button>
         </div>
       </div>
@@ -464,9 +466,19 @@ function init3D(){
     });
     mids.forEach(m=>{const g=drums[m.userData.d];if(g)m.position.z=g.position.z/2;});
   }
-  const drawersBtn=document.getElementById("drawers");
-  function syncDrawers(){const any=drums.some(g=>g.userData.target);drawersBtn.setAttribute("aria-pressed",any);drawersBtn.textContent=any?"Fechar gavetas":"Abrir gavetas";}
-  drawersBtn.onclick=()=>{const t=drums.some(g=>g.userData.target)?0:1;drums.forEach(g=>g.userData.target=t);syncDrawers();};
+  // gavetas: cada uma abre sozinha (Cima, Meio, Baixo) ou todas de uma vez
+  const dwBtns=[...document.querySelectorAll("[data-dw]")];
+  function syncDrawers(){
+    dwBtns.forEach(b=>{const k=b.dataset.dw;
+      const on=k==="all"?drums.length>0&&drums.every(g=>g.userData.target):!!(drums[+k]&&drums[+k].userData.target);
+      b.setAttribute("aria-pressed",on);});
+  }
+  dwBtns.forEach(b=>b.onclick=()=>{
+    const k=b.dataset.dw;
+    if(k==="all"){const t=drums.every(g=>g.userData.target)?0:1;drums.forEach(g=>g.userData.target=t);}
+    else{const g=drums[+k];if(g)g.userData.target=g.userData.target?0:1;}
+    syncDrawers();
+  });
 
   apply=()=>{
     ribMeshes.forEach(m=>{m.material=ribMat[st.ribs[m.userData.d][m.userData.i]];});
