@@ -37,7 +37,10 @@ nav.pillnav{display:flex;gap:4px;padding:5px;border-radius:999px;background:var(
 nav.pillnav a{color:var(--soft);text-decoration:none;font-size:12.5px;font-weight:500;padding:8px 16px;border-radius:999px}
 nav.pillnav a:first-child{background:var(--pill);color:var(--pill-ink);font-weight:700}
 nav.pillnav a:not(:first-child):hover{color:#fff}
-.acts{display:flex;justify-content:flex-end;gap:8px}
+.acts{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.mid{display:flex;flex-direction:column;align-items:center;gap:12px}
+.grp{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.grp:last-child{margin-bottom:0}
+.grp h3{margin:0;font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .ic{border:1px solid var(--line);background:var(--glass);border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px)}
 .ic[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
 .cols{display:grid;grid-template-columns:minmax(0,340px) 1fr minmax(0,300px);gap:24px;padding:24px 28px 0;min-height:520px;align-items:start}
@@ -60,7 +63,7 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 .seg button{border:0;background:none;color:var(--soft);font-weight:500;font-size:12.5px;padding:8px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);font-weight:700}
 .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:0 28px 24px;position:absolute;left:0;right:0;bottom:0}
-.tag{font-family:var(--display);font-weight:500;font-size:15px;text-align:center;line-height:1.35;margin:0 auto;color:#fff}
+.tag{display:none;font-family:var(--display);font-weight:500;font-size:15px;text-align:center;line-height:1.35;margin:0;color:#fff}
 .hint{color:var(--mute);font-size:12.5px;margin:0;min-width:140px}
 .nextth{width:76px;height:76px;border-radius:18px;border:1px solid var(--line);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 24px rgba(0,0,0,.4);overflow:hidden;padding:0;position:relative}
 .nextth span{position:absolute;inset:auto 0 0 0;font-size:10px;background:rgba(0,0,0,.45);padding:2px 0;text-align:center}
@@ -73,7 +76,9 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 .chip:hover{background:var(--glass2)}
 .chip:focus-visible,.seg button:focus-visible,.ic:focus-visible,.cta:focus-visible,.arrows button:focus-visible,.nextth:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .rings .chip{display:flex;align-items:center;gap:8px}
-.rings .chip i{width:14px;height:14px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.rings .chip i,.grp .chip i{width:16px;height:16px;border-radius:50%;display:block;background-size:cover;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.grp .chip{display:flex;align-items:center;gap:8px}
+.grp .chip[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
 .rings .chip[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
 .bill{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .bill li{display:flex;align-items:center;gap:10px;font-size:14px}
@@ -85,15 +90,21 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 .reset{align-self:flex-start;background:none;border:0;color:var(--mute);font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
 @media (max-width:980px){
   .hero{min-height:0;display:flex;flex-direction:column}
-  #view{position:relative;order:3;height:min(92vw,520px);inset:auto}
-  .top{grid-template-columns:1fr auto;padding:18px 18px 4px}
+  .top{grid-template-columns:1fr;padding:18px 18px 0;order:1}
   nav.pillnav{display:none}
-  .cols{display:flex;flex-direction:column;padding:12px 18px 0;min-height:0;gap:20px}
-  .over.cols{order:1}
-  .side{align-items:flex-start;text-align:left}
+  .cols{display:contents}
+  .cols>div:empty{display:none}
+  .copy{order:2;padding:12px 18px 0}
+  .copy .arrows{display:none}
+  .copy p{margin-bottom:16px}
+  #view{position:relative;order:3;inset:auto;height:min(100vw,460px);margin-top:4px}
+  .bottom{position:static;order:4;padding:0 18px 12px;flex-direction:column;align-items:center;gap:10px}
+  .tag{display:block}
+  .bottom .hint{order:3;text-align:center}
+  .bottom .nextth{display:none}
+  .side{order:5;align-items:flex-start;text-align:left;padding:8px 18px 22px}
   .swatches{justify-content:flex-start}
-  .bottom{position:static;order:4;padding:0 18px 20px;flex-wrap:wrap;justify-content:center}
-  .tag{order:-1;width:100%}
+  .seg button{padding:8px 10px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}body{transition:none}}
 </style>
@@ -105,11 +116,8 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
     <canvas id="view" aria-label="Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos"></canvas>
     <header class="over top">
       <div class="logo"><b>B</b>Bocote</div>
-      <nav class="pillnav" aria-label="Secções"><a href="#topo">Mesa</a><a href="#composicoes">Composições</a><a href="#orcamento">Orçamento</a></nav>
-      <div class="acts">
-        <button class="ic" id="drawers" aria-pressed="false">Abrir gavetas</button>
-        <button class="ic" id="spin" aria-pressed="false">Rodar sozinha</button>
-      </div>
+      <nav class="pillnav" aria-label="Secções"><a href="#topo">Mesa</a><a href="#composicoes">Composições</a><a href="#acabamentos">Acabamentos</a><a href="#orcamento">Orçamento</a></nav>
+      <div></div>
     </header>
     <div class="over cols" id="topo">
       <div class="copy">
@@ -133,7 +141,13 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
     </div>
     <div class="over bottom">
       <p class="hint" id="hint">90 gomos · 30 por gaveta</p>
-      <p class="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
+      <div class="mid">
+        <p class="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
+        <div class="acts">
+          <button class="ic" id="drawers" aria-pressed="false">Abrir gavetas</button>
+          <button class="ic" id="spin" aria-pressed="false">Rodar sozinha</button>
+        </div>
+      </div>
       <button class="nextth" id="nextTh" aria-label="Ver o tecido seguinte"><span id="nextName"></span></button>
     </div>
   </section>
@@ -149,8 +163,15 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
         <button class="chip" data-p="degrade">Degradê</button>
         <button class="chip" data-p="aleatorio">Aleatório</button>
       </div>
-      <h2 style="margin-top:6px">Aros e base</h2>
-      <div class="chips rings" id="rings"></div>
+    </section>
+    <section class="card" id="acabamentos">
+      <h2>Acabamento dos aros, base e gavetas</h2>
+      <p class="total">Muda os aros, a base e o interior das gavetas ao mesmo tempo.</p>
+      <div id="rings"></div>
+    </section>
+    <section class="card" id="pedra">
+      <h2>Pedra do tampo</h2>
+      <div class="chips rings" id="stones"></div>
     </section>
     <section class="card">
       <h2>Gomos necessários</h2>
@@ -177,6 +198,7 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="modelo-3d.js"></script>
 <script src="tecidos-3d.js"></script>
+<script src="acabamentos-3d.js"></script>
 <script>
 /* ---------- dados ---------- */
 const FABRICS=[
@@ -195,14 +217,35 @@ const FABRICS=[
   {id:"t12",n:"Camelo",c:"#8F745D",ref:"Amostra 12"},
   {id:"t13",n:"Bordeaux",c:"#832233",ref:"Amostra 13"},
 ];
-const RINGS=[{n:"Terracota",c:"#A64A2B"},{n:"Nogueira",c:"#4F3322"},{n:"Preto",c:"#1E1C1B"},{n:"Latão",c:"#B8955C",metal:true}];
+const FINISHES=[
+  {id:"carvalho",n:"Carvalho",c:"#B98C57",g:"Madeiras",tex:"carvalho"},
+  {id:"nogueira",n:"Nogueira",c:"#5A3A27",g:"Madeiras",tex:"nogueira"},
+  {id:"pauferro",n:"Pau-ferro",c:"#3B221A",g:"Madeiras",tex:"pauferro"},
+  {id:"freixo",n:"Freixo",c:"#D8BE94",g:"Madeiras",tex:"freixo"},
+  {id:"cerejeira",n:"Cerejeira",c:"#A65C3A",g:"Madeiras",tex:"cerejeira"},
+  {id:"ebano",n:"Ébano",c:"#231C18",g:"Madeiras",tex:"ebano"},
+  {id:"carvalho_lavado",n:"Carvalho lavado",c:"#D5C2A3",g:"Lavados",tex:"carvalho_lavado"},
+  {id:"nogueira_lavada",n:"Nogueira lavada",c:"#957A67",g:"Lavados",tex:"nogueira_lavada"},
+  {id:"cinza_lavado",n:"Cinza lavado",c:"#B3B0AA",g:"Lavados",tex:"cinza_lavado"},
+  {id:"branco_lavado",n:"Branco lavado",c:"#E8E3DA",g:"Lavados",tex:"branco_lavado"},
+  {id:"terracota",n:"Terracota",c:"#A64A2B",g:"Lacados"},
+  {id:"preto",n:"Preto",c:"#1E1C1B",g:"Lacados"},
+  {id:"branco",n:"Branco",c:"#EFEDE8",g:"Lacados"},
+  {id:"latao",n:"Latão",c:"#B8955C",g:"Lacados",metal:true},
+];
+const STONES=[
+  {id:"carrara",n:"Carrara",c:"#E8E8E6"},{id:"calacatta",n:"Calacatta Gold",c:"#F2EBDD"},{id:"statuario",n:"Statuario",c:"#F0F0EE"},
+  {id:"nero",n:"Nero Marquina",c:"#111112"},{id:"emperador",n:"Emperador",c:"#6B4430"},{id:"verde",n:"Verde Alpi",c:"#123D32"},{id:"travertino",n:"Travertino",c:"#D7C7AA"},
+];
+const finOf=id=>FINISHES.find(f=>f.id===id)||FINISHES[10],stoneOf=id=>STONES.find(f=>f.id===id)||STONES[0];
+const accStyle=f=>{const k=f.tex||f.id;return window.ACAB&&ACAB[k]?`background-color:${f.c};background-image:url(${ACAB[k]})`:`background-color:${f.c}`;};
 const N=30,D=3,STEP=2*Math.PI/N;
 const swStyle=f=>window.TECIDOS&&TECIDOS[f.id]?`background-color:${f.c};background-image:url(${TECIDOS[f.id]});background-size:300%`:`background-color:${f.c}`;
 const fab=id=>FABRICS.find(f=>f.id===id)||FABRICS[0];
-const fresh=()=>({ribs:Array.from({length:D},()=>Array(N).fill("natural")),ring:0});
+const fresh=()=>({ribs:Array.from({length:D},()=>Array(N).fill("natural")),fin:"terracota",stone:"carrara"});
 let st=fresh(),cur="t05",mode="gomo";
-try{const s=JSON.parse(localStorage.getItem("gomos-3d-v3"));if(s&&s.ribs&&s.ribs.length===D&&s.ribs[0].length===N&&s.ribs.flat().every(id=>FABRICS.some(f=>f.id===id)))st=s;}catch(e){}
-const save=()=>{try{localStorage.setItem("gomos-3d-v3",JSON.stringify(st))}catch(e){}};
+try{const s=JSON.parse(localStorage.getItem("gomos-3d-v4"));if(s&&s.ribs&&s.ribs.length===D&&s.ribs[0].length===N&&FINISHES.some(f=>f.id===s.fin)&&STONES.some(f=>f.id===s.stone)&&s.ribs.flat().every(id=>FABRICS.some(f=>f.id===id)))st=s;}catch(e){}
+const save=()=>{try{localStorage.setItem("gomos-3d-v4",JSON.stringify(st))}catch(e){}};
 
 /* ---------- UI ---------- */
 const swEl=document.getElementById("swatches");
@@ -229,19 +272,20 @@ mG.onclick=()=>setMode("gomo");mV.onclick=()=>setMode("gaveta");mT.onclick=()=>s
 
 /* ---------- pedido de orçamento: código curto = aros + um dígito por gomo ---------- */
 const FID=FABRICS.map(f=>f.id);
-const encode=()=>"MG"+st.ring+"-"+st.ribs.map(r=>r.map(id=>FID.indexOf(id)).join("")).join("-");
+const encode=()=>"MG"+FINISHES.findIndex(f=>f.id===st.fin).toString(36)+STONES.findIndex(f=>f.id===st.stone).toString(36)+"-"+st.ribs.map(r=>r.map(id=>FID.indexOf(id)).join("")).join("-");
 function decode(c){
-  const m=/^MG(\d)-([0-9-]+)$/.exec((c||"").trim());if(!m)return null;
-  const rows=m[2].split("-");if(rows.length!==D||rows.some(r=>r.length!==N))return null;
+  const m=/^MG([0-9a-z])([0-9a-z])-([0-9-]+)$/.exec((c||"").trim());if(!m)return null;
+  const rows=m[3].split("-");if(rows.length!==D||rows.some(r=>r.length!==N))return null;
   const ribs=rows.map(r=>[...r].map(ch=>FID[+ch]));
-  if(+m[1]>=RINGS.length||ribs.flat().some(x=>!x))return null;
-  return{ribs,ring:+m[1]};
+  const fin=FINISHES[parseInt(m[1],36)],stone=STONES[parseInt(m[2],36)];
+  if(!fin||!stone||ribs.flat().some(x=>!x))return null;
+  return{ribs,fin:fin.id,stone:stone.id};
 }
 const linkFor=()=>location.href.split("#")[0]+"#c="+encode();
 function summary(){
   const cnt={};st.ribs.flat().forEach(id=>cnt[id]=(cnt[id]||0)+1);
   const lines=FABRICS.filter(f=>cnt[f.id]).map(f=>`- ${f.n}: ${cnt[f.id]} gomos`);
-  return `Pedido de orçamento — Mesa de cabeceira Bocote\nAros e base: ${RINGS[st.ring].n}\n${lines.join("\n")}\nCódigo: ${encode()}\nLink: ${linkFor()}`;
+  return `Pedido de orçamento — Mesa de cabeceira Bocote\nAcabamento (aros, base e gavetas): ${finOf(st.fin).n}\nPedra do tampo: ${stoneOf(st.stone).n}\n${lines.join("\n")}\nCódigo: ${encode()}\nLink: ${linkFor()}`;
 }
 const codeEl=document.getElementById("code"),copiedEl=document.getElementById("copied");
 async function copy(t,msg){
@@ -253,15 +297,19 @@ document.getElementById("copyLink").onclick=()=>copy(linkFor(),"Link copiado.");
 const shBtn=document.getElementById("share");
 if(navigator.share){shBtn.hidden=false;shBtn.onclick=()=>navigator.share({title:"Mesa de cabeceira Bocote",text:summary()}).catch(()=>{});}
 (function(){const m=/[#&]c=([^&]+)/.exec(location.hash);const d=m&&decode(decodeURIComponent(m[1]));if(d)st=d;})();
-const rEl=document.getElementById("rings");
-function renderRings(){rEl.innerHTML=RINGS.map((r,k)=>`<button class="chip" data-r="${k}" aria-pressed="${k===st.ring}"><i style="background:${r.c}"></i>${r.n}</button>`).join("");}
-rEl.addEventListener("click",e=>{const b=e.target.closest("[data-r]");if(!b)return;st.ring=+b.dataset.r;save();renderRings();apply();});
+const rEl=document.getElementById("rings"),pEl=document.getElementById("stones");
+function renderRings(){
+  rEl.innerHTML=["Madeiras","Lavados","Lacados"].map(g=>`<div class="grp"><h3>${g}</h3><div class="chips">${FINISHES.filter(f=>f.g===g).map(f=>`<button class="chip" data-r="${f.id}" aria-pressed="${f.id===st.fin}"><i style="${accStyle(f)}"></i>${f.n}</button>`).join("")}</div></div>`).join("");
+  pEl.innerHTML=STONES.map(f=>`<button class="chip" data-s="${f.id}" aria-pressed="${f.id===st.stone}"><i style="${accStyle(f)}"></i>${f.n}</button>`).join("");
+}
+rEl.addEventListener("click",e=>{const b=e.target.closest("[data-r]");if(!b)return;st.fin=b.dataset.r;save();renderRings();apply();});
+pEl.addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(!b)return;st.stone=b.dataset.s;save();renderRings();apply();});
 function renderBill(){
   const cnt={};st.ribs.flat().forEach(id=>cnt[id]=(cnt[id]||0)+1);
   const rows=FABRICS.filter(f=>cnt[f.id]);
   document.getElementById("bill").innerHTML=rows.map(f=>`<li><i style="${swStyle(f)}"></i><span>${f.n}</span><b>${cnt[f.id]}</b></li>`).join("");
   codeEl.value=encode();copiedEl.textContent="";
-  document.getElementById("total").textContent=`${rows.length} ${rows.length===1?"tecido":"tecidos"} · ${N*D} gomos · aros em ${RINGS[st.ring].n.toLowerCase()}`;
+  document.getElementById("total").textContent=`${rows.length} ${rows.length===1?"tecido":"tecidos"} · ${N*D} gomos · ${finOf(st.fin).n.toLowerCase()} · tampo ${stoneOf(st.stone).n}`;
 }
 document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
   const p=b.dataset.p,alt=cur==="natural"?"t12":"natural";
@@ -335,7 +383,16 @@ function init3D(){
   // modelo 3D feito no Blender (mesa.glb, incluído em modelo-3d.js para abrir sem servidor)
   const drums=[],knobs=[],mids=[],H=0.152;
   const ringMat=new THREE.MeshPhysicalMaterial({roughness:0.28,clearcoat:1,clearcoatRoughness:0.15,envMapIntensity:0.6});
-  ringMats.push(ringMat);
+  const interMat=new THREE.MeshStandardMaterial({roughness:0.65,side:THREE.DoubleSide,envMapIntensity:0.4});
+  let marbleMat=null;ringMats.push(ringMat);
+  // texturas de madeira e pedra (data URI em acabamentos-3d.js), criadas só quando são precisas
+  const texCache={};
+  function tex(key,rx,ry){
+    const id=key+"|"+rx+"|"+ry;if(texCache[id])return texCache[id];
+    const t=new THREE.Texture();t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry);t.encoding=THREE.sRGBEncoding;
+    t.anisotropy=renderer.capabilities.getMaxAnisotropy();
+    const im=new Image();im.onload=()=>{t.image=im;t.needsUpdate=true;};im.src=ACAB[key];texCache[id]=t;return t;
+  }
   function onModel(gltf){
     const root=gltf.scene;scene.add(root);
     const aniso=renderer.capabilities.getMaxAnisotropy();
@@ -346,8 +403,9 @@ function init3D(){
       const mt=o.material;
       if(mt.name==="fabric"){fabricBase=mt;[mt.map,mt.normalMap].forEach(t=>t&&(t.anisotropy=aniso));}
       if(mt.name==="lacquer")o.material=ringMat;
+      if(mt.name==="interior")o.material=interMat;
       if(mt.name==="brass"){mt.envMapIntensity=1.2;}
-      if(mt.name==="marble"){mt.envMapIntensity=0.9;}
+      if(mt.name==="marble"){mt.envMapIntensity=0.9;marbleMat=mt;}
       const n=o.name;let m;
       if((m=/^rib_(\d+)_(\d+)$/.exec(n))){o.userData={d:+m[1],i:+m[2],anim:null,q:o.quaternion.clone()};ribMeshes.push(o);}
       else if((m=/^knob(\d+)$/.exec(n))){o.userData.d=+m[1];knobs.push(o);}
@@ -412,9 +470,16 @@ function init3D(){
 
   apply=()=>{
     ribMeshes.forEach(m=>{m.material=ribMat[st.ribs[m.userData.d][m.userData.i]];});
-    const r=RINGS[st.ring];
-    ringMat.color.set(r.c).convertSRGBToLinear();
-    ringMat.metalness=r.metal?1:0;ringMat.roughness=r.metal?0.3:0.34;ringMat.clearcoat=r.metal?0:1;
+    const f=finOf(st.fin),white=new THREE.Color(1,1,1),tint=new THREE.Color(f.c).convertSRGBToLinear();
+    const hasTex=!!(f.tex&&window.ACAB&&ACAB[f.tex]);
+    // o mesmo acabamento vale para aros, base e interior das gavetas
+    ringMat.map=hasTex?tex(f.tex,1.5,4):null;ringMat.color.copy(hasTex?white:tint);
+    ringMat.metalness=f.metal?1:0;ringMat.roughness=f.metal?0.3:hasTex?0.5:0.28;ringMat.clearcoat=f.metal?0:hasTex?0.3:1;ringMat.needsUpdate=true;
+    interMat.map=hasTex?tex(f.tex,0.6,0.6):null;interMat.color.copy(hasTex?white:tint.clone().multiplyScalar(0.9));
+    interMat.metalness=f.metal?0.8:0;interMat.roughness=f.metal?0.4:0.65;interMat.needsUpdate=true;
+    if(marbleMat){const sn=stoneOf(st.stone);
+      marbleMat.map=window.ACAB&&ACAB[sn.id]?tex(sn.id,1,1):null;marbleMat.color.copy(white);
+      marbleMat.roughness=sn.id==="travertino"?0.55:0.14;marbleMat.needsUpdate=true;}
     renderBill();
   };
 
@@ -443,7 +508,7 @@ function init3D(){
   function resize(){
     const w=canvas.clientWidth,h=canvas.clientHeight;
     renderer.setSize(w,h,false);camera.aspect=w/h;
-    camera.fov=w/h<0.9?32:28;camera.updateProjectionMatrix();
+    camera.fov=w/h<0.9?32:33;camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(canvas);resize();
   (function loop(){stepAnim(performance.now());controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);})();

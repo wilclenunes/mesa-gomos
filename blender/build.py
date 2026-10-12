@@ -62,11 +62,11 @@ def rib_mesh(name,uoff,voff):
         for i in range(U):
             a=j*(U+1)+i;faces.append((a,a+1,a+U+2,a+U+1))
     return make(name,verts,faces,uvs,fabric)
-def lathe(profile,seg=96,uvs=False):
+def lathe(profile,seg=96,uvs=False,ur=None,TL=None):
     verts=[];faces=[];uv=[]
     for s in range(seg):
         a=2*math.pi*s/seg
-        for r,y in profile:verts.append((r*math.cos(a),r*math.sin(a),y));uv.append((a*profile[0][0]/TILE,(y+10)/TILE))
+        for r,y in profile:verts.append((r*math.cos(a),r*math.sin(a),y));uv.append((a*(ur or profile[0][0])/(TL or TILE),(y+10)/(TL or TILE)))
     P=len(profile)
     for s in range(seg):
         s2=(s+1)%seg
@@ -87,7 +87,7 @@ def empty(name,loc,parent=None):
     if parent:o.parent=parent
     return o
 root=empty('mesa',(0,0,0))
-v,f=lathe(band_profile(Rc+0.004,BASE,0.05,0.006));obj('base',make('base',v,f,mat=lac),root,(0,0,BASE/2))
+v,f,u_=lathe(band_profile(Rc+0.004,BASE,0.05,0.006),96,True,0.23,0.2);obj('base',make('base',v,f,u_,lac),root,(0,0,BASE/2))
 variants=[rib_mesh(f'ribv{k}',np.random.default_rng(k).uniform(),np.random.default_rng(k+50).uniform()) for k in range(6)]
 # puxador
 def knob_mesh():
@@ -156,7 +156,7 @@ for d in range(D):
         box(f'slide_esf{d}_{sgn}',(0.0030,L-0.01,0.004),(sgn*(XW-0.0018),0,zc),dr).data.materials[0]=blk
     disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
     if d>0:
-        v,f=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004));obj(f'band{d}',make('band',v,f,mat=lac),root,(0,0,yb+H+GAP/2))
+        v,f,u_=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004),96,True,0.23,0.2);obj(f'band{d}',make('band',v,f,u_,lac),root,(0,0,yb+H+GAP/2))
 disc('chao',Rc,BASE-0.003,BASE+0.002,root)
 yTop=yc0+H/2+GAP/2+0.003
 cv2,cf2,cu2=lathe(band_profile(Rc+0.002,0.022,Rc-0.020,0.006),96,True);obj('colar',make('colar',cv2,cf2,cu2,fabric),root,(0,0,yTop-0.003))
