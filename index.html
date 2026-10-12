@@ -352,7 +352,7 @@ function init3D(){
       if((m=/^rib_(\d+)_(\d+)$/.exec(n))){o.userData={d:+m[1],i:+m[2],anim:null,q:o.quaternion.clone()};ribMeshes.push(o);}
       else if((m=/^knob(\d+)$/.exec(n))){o.userData.d=+m[1];knobs.push(o);}
     });
-    root.traverse(o=>{const m=/^drum(\d+)$/.exec(o.name);if(m){o.userData={d:+m[1],open:0,target:0};drums[+m[1]]=o;}});
+    root.traverse(o=>{const m=/^drawer(\d+)$/.exec(o.name);if(m){o.userData={d:+m[1],open:0,target:0};drums[+m[1]]=o;}});
     FABRICS.forEach(f=>{
       const mt=fabricBase.clone();mt.envMapIntensity=0.5;mt.metalness=0;
       if(window.TECIDOS&&TECIDOS[f.id]){
@@ -401,7 +401,7 @@ function init3D(){
     });
     drums.forEach(g=>{
       const u=g.userData;u.open+=(u.target-u.open)*0.14;
-      g.position.z=0.17*u.open*u.open*(3-2*u.open);
+      g.position.z=0.19*u.open*u.open*(3-2*u.open);
     });
   }
   const drawersBtn=document.getElementById("drawers");

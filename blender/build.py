@@ -103,32 +103,66 @@ def knob_mesh():
     k=bpy.context.object;bpy.ops.object.shade_smooth();me=k.data;bpy.data.objects.remove(k)
     me.materials.append(brass);return me
 kme=knob_mesh()
-drums=[]
+# ---------- gavetas: frente curva (9 gomos) + caixa em madeira clara que desliza para a frente
+interior,_,ibs=mk('interior');ti=_.nodes.new('ShaderNodeTexImage');ti.image=img('wood','wood.jpg');_.links.new(ti.outputs[0],ibs.inputs['Base Color']);ibs.inputs['Roughness'].default_value=0.6
+interior.use_backface_culling=False
+AH=4.5*STEP;XW=Rc*math.sin(AH);YF=Rc*math.cos(AH);YB=math.sqrt((Rc-0.012)**2-XW**2);TRAVEL=0.19
+def auto_uv(me,sc_=0.12):
+    l=me.uv_layers.new(name='UVMap')
+    for p in me.polygons:
+        n=[abs(c) for c in p.normal];ax=n.index(max(n))
+        for li in p.loop_indices:
+            co=me.vertices[me.loops[li].vertex_index].co
+            u,v=(co.x,co.y) if ax==2 else (co.x,co.z) if ax==1 else (co.y,co.z)
+            l.data[li].uv=(u/sc_,v/sc_)
+def box(name,size,loc,parent):
+    sx,sy,sz=[x/2 for x in size]
+    vs=[(x*sx,y*sy,z*sz) for x in(-1,1) for y in(-1,1) for z in(-1,1)]
+    fs=[(0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3)]
+    me=make(name,vs,fs,None,interior,smooth=False);auto_uv(me);return obj(name,me,parent,loc)
+def disc(name,r,y0,y1,parent):
+    v,f=lathe([(0,y0),(r,y0),(r,y1),(0,y1)],96);me=make(name,v,f,None,interior,smooth=False);auto_uv(me);return obj(name,me,parent)
+def tray_floor(parent,zc):
+    rr=Rc-0.0015;pts=[]
+    for k in range(25):
+        a=-AH+2*AH*k/24;pts.append((rr*math.sin(a),-rr*math.cos(a)))
+    pts+= [(XW-0.0035,YB),(-(XW-0.0035),YB)]
+    th=0.006;vs=[(x,y,zc+th/2) for x,y in pts]+[(x,y,zc-th/2) for x,y in pts];n=len(pts);fs=[tuple(range(n)),tuple(range(2*n-1,n-1,-1))]
+    for k in range(n):fs.append((k,(k+1)%n,n+(k+1)%n,n+k))
+    me=make('floor',vs,fs,None,interior,smooth=False);auto_uv(me);return obj('piso',me,parent)
+drums=[];drawers=[]
+yc0=BASE+(D-1)*(H+GAP)+H/2
 for d in range(D):
     yb=BASE+(D-1-d)*(H+GAP);yc=yb+H/2
     dr=empty(f'drum{d}',(0,0,yc),root);drums.append(dr)
-    cv,cf=lathe([(Rc+0.003,-H*0.48),(Rc+0.003,H*0.48)],72);obj(f'core{d}',make('core',cv,cf,mat=core),dr)
+    dw=empty(f'drawer{d}',(0,0,0),dr);drawers.append(dw)
+    cv,cf=lathe([(Rc+0.003,-H*0.48),(Rc+0.003,H*0.48)],72);obj(f'core{d}',make('core',cv,cf,mat=interior),dr)
+    for sgn in(-1,1):box(f'parede{d}_{sgn}',(0.006,2*math.sqrt(Rc**2-(XW+0.006)**2),H-0.004),(sgn*(XW+0.006),0,0),dr)
     for i in range(N):
-        o=obj(f'rib_{d}_{i}',variants[(d*7+i*5+i//3)%6],dr);o.rotation_euler[2]=i*STEP
-    k=obj(f'knob{d}',kme,dr,(0,-(R+0.001),0.004));k.rotation_euler[0]=math.pi/2
+        ip=((i+15)%N)-15
+        o=obj(f'rib_{d}_{i}',variants[(d*7+i*5+i//3)%6],dw if abs(ip)<=4 else dr);o.rotation_euler[2]=i*STEP
+    k=obj(f'knob{d}',kme,dw,(0,-(R+0.001),0.004));k.rotation_euler[0]=math.pi/2
+    tray_floor(dw,-H/2+0.006)
+    for sgn in(-1,1):box(f'lado{d}_{sgn}',(0.006,YB+YF-0.003,0.115),(sgn*(XW-0.0035),(YB-YF)/2,-H/2+0.003+0.0575),dw)
+    box(f'fundo{d}',(2*(XW-0.0035),0.006,0.115),(0,YB,-H/2+0.003+0.0575),dw)
+    disc(f'teto{d}',Rc+0.003,yc+H/2+GAP/2-0.003,yc+H/2+GAP/2+0.003,root)
     if d>0:
-        v,f=lathe(band_profile(Rc+0.006,GAP+0.004,0.05,0.004));obj(f'band{d}',make('band',v,f,mat=lac),root,(0,0,yb+H+GAP/2))
-    if d==0:
-        cv2,cf2,cu2=lathe(band_profile(Rc+0.002,0.011,Rc-0.020,0.005),96,True);obj('colar',make('colar',cv2,cf2,cu2,fabric),dr,(0,0,H/2-0.0035))
-        # tampo: disco com UV planar
-        verts=[];faces=[];uv=[];seg=96
-        verts.append((0,0,0.007));uv.append((0.5,0.5))
-        for s in range(seg):
-            a=2*math.pi*s/seg;x,y=(Rc-0.016)*math.cos(a),(Rc-0.016)*math.sin(a)
-            verts.append((x,y,0.007));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
-        for s in range(seg):faces.append((0,1+s,1+(s+1)%seg))
-        for s in range(seg):
-            a=2*math.pi*s/seg;x,y=(Rc-0.016)*math.cos(a),(Rc-0.016)*math.sin(a)
-            verts.append((x,y,-0.007));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
-        for s in range(seg):
-            a1=1+s;a2=1+(s+1)%seg;faces.append((a1,a1+seg,a2+seg,a2))
-        # corrigir faces laterais para formar tubo
-        me=make('marble',verts,faces,uv,mar);obj('marble',me,dr,(0,0,H/2-0.013))
+        v,f=lathe(band_profile(Rc+0.006,GAP-0.002,0.05,0.004));obj(f'band{d}',make('band',v,f,mat=lac),root,(0,0,yb+H+GAP/2))
+disc('chao',Rc,BASE-0.003,BASE+0.002,root)
+yTop=yc0+H/2+GAP/2+0.003
+cv2,cf2,cu2=lathe(band_profile(Rc+0.002,0.022,Rc-0.020,0.006),96,True);obj('colar',make('colar',cv2,cf2,cu2,fabric),root,(0,0,yTop-0.003))
+verts=[];faces=[];uv=[];seg=96;MR=Rc-0.016;MT=0.014
+verts.append((0,0,MT/2));uv.append((0.5,0.5))
+for s_ in range(seg):
+    a=2*math.pi*s_/seg;x,y=MR*math.cos(a),MR*math.sin(a);verts.append((x,y,MT/2));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
+for s_ in range(seg):faces.append((0,1+s_,1+(s_+1)%seg))
+for s_ in range(seg):
+    a=2*math.pi*s_/seg;x,y=MR*math.cos(a),MR*math.sin(a);verts.append((x,y,-MT/2));uv.append((0.5+x/(2*Rc),0.5+y/(2*Rc)))
+for s_ in range(seg):
+    a1=1+s_;a2=1+(s_+1)%seg;faces.append((a1,a1+seg,a2+seg,a2))
+obj('marble',make('marble',verts,faces,uv,mar),root,(0,0,yTop-0.004))
+def set_open(v):
+    for dw in drawers:dw.location.y=-TRAVEL*v
 bpy.context.view_layer.update()
 
 # ---------- cena de render
@@ -150,6 +184,9 @@ sc.view_settings.view_transform='AgX' if 'AgX' in [x.identifier for x in bpy.typ
 sc.render.filepath=os.path.join(OUT,'render.png')
 if sys.argv[-1]=='render':
     bpy.ops.render.render(write_still=True)
+    set_open(1.0);bpy.context.view_layer.update()
+    co.location=Vector((0.55,-2.0,1.75));co.rotation_euler=(Vector((0,-0.1,0.27))-co.location).to_track_quat('-Z','Y').to_euler();cam.lens=75
+    sc.render.filepath=os.path.join(OUT,'render_open.png');bpy.ops.render.render(write_still=True);set_open(0.0)
 
 bpy.ops.file.pack_all();bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,'mesa.blend'),compress=True)
 # ---------- exportar GLB (textura ligada direto à cor base; o site aplica o tecido por cima)

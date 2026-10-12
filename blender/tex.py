@@ -61,3 +61,15 @@ col=base[None,None,:]*(1-0.10*cloud[...,None])
 col=col*(1-0.30*vein[...,None]*np.array([0.9,0.92,0.95]))*(1-0.5*vein2[...,None])
 col[...,0]+=0.015*vein[...]; 
 Image.fromarray((np.clip(col,0,1)*255).astype('uint8')).save('marble.jpg',quality=92)
+
+# madeira clara (freixo) para o interior das gavetas
+g=np.zeros((S,S))
+for sc_,w_ in ((1,0.5),(3,0.3),(9,0.2)):
+    r=rng.random((S//sc_+2,1))
+    col=np.asarray(Image.fromarray((r*255).astype('uint8')).resize((S,S),Image.BICUBIC),dtype=float)/255
+    g+=col*w_
+fine=rng.random((S,S))*0.12
+g=g+fine
+g=(g-g.min())/(g.max()-g.min())
+base=np.array([0.86,0.76,0.62]);img_=base[None,None,:]*(0.82+0.3*g[...,None])
+Image.fromarray((np.clip(img_,0,1)*255).astype('uint8')).save('wood.jpg',quality=90)
