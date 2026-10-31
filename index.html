@@ -37,6 +37,10 @@ nav.pillnav{display:flex;gap:4px;padding:5px;border-radius:999px;background:var(
 nav.pillnav a{color:var(--soft);text-decoration:none;font-size:12.5px;font-weight:500;padding:8px 16px;border-radius:999px}
 nav.pillnav a:first-child{background:var(--pill);color:var(--pill-ink);font-weight:700}
 nav.pillnav a:not(:first-child):hover{color:#fff}
+.lang{justify-self:end;display:flex;gap:2px;padding:4px;border-radius:999px;background:var(--glass2);backdrop-filter:blur(10px)}
+.lang button{border:0;background:none;color:var(--soft);font-size:12px;font-weight:700;letter-spacing:.06em;padding:6px 11px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink)}
+.lang button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .acts{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
 .dwg{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px}
 .dwg span{font-size:12.5px;color:var(--soft);margin-right:2px}
@@ -92,7 +96,7 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 .reset{align-self:flex-start;background:none;border:0;color:var(--mute);font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
 @media (max-width:980px){
   .hero{min-height:0;display:flex;flex-direction:column}
-  .top{grid-template-columns:1fr;padding:18px 18px 0;order:1}
+  .top{grid-template-columns:1fr auto;padding:18px 18px 0;order:1}
   nav.pillnav{display:none}
   .cols{display:contents}
   .cols>div:empty{display:none}
@@ -114,81 +118,81 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 <body>
 
 <div class="page">
-  <section class="hero" aria-label="Pré-visualização 3D da mesa">
-    <canvas id="view" aria-label="Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos"></canvas>
+  <section class="hero" aria-label="Pré-visualização 3D da mesa" data-i18n-aria="heroAria">
+    <canvas id="view" aria-label="Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos" data-i18n-aria="viewAria"></canvas>
     <header class="over top">
       <div class="logo"><b>B</b>Bocote</div>
-      <nav class="pillnav" aria-label="Secções"><a href="#topo">Mesa</a><a href="#composicoes">Composições</a><a href="#acabamentos">Acabamentos</a><a href="#orcamento">Orçamento</a></nav>
-      <div></div>
+      <nav class="pillnav" aria-label="Secções" data-i18n-aria="navAria"><a href="#topo" data-i18n="navTable">Mesa</a><a href="#composicoes" data-i18n="navPatterns">Composições</a><a href="#acabamentos" data-i18n="navFinishes">Acabamentos</a><a href="#orcamento" data-i18n="navQuote">Orçamento</a></nav>
+      <div class="lang" role="group" aria-label="Idioma / Language"><button data-lang="pt" aria-pressed="true" lang="pt-PT">PT</button><button data-lang="en" aria-pressed="false" lang="en-GB">EN</button></div>
     </header>
     <div class="over cols" id="topo">
       <div class="copy">
-        <div class="arrows"><button id="prevF" aria-label="Tecido anterior">‹</button><button id="nextF" aria-label="Tecido seguinte">›</button></div>
-        <h1>Mesa de cabeceira à tua maneira</h1>
-        <p>Cada gomo encaixa e desencaixa. Escolhe um tecido e toca nos gomos para os trocar. Arrasta para rodar, aperta para aproximar.</p>
-        <a class="cta" href="#orcamento">Pedir orçamento <span aria-hidden="true">›</span></a>
+        <div class="arrows"><button id="prevF" aria-label="Tecido anterior" data-i18n-aria="prevF">‹</button><button id="nextF" aria-label="Tecido seguinte" data-i18n-aria="nextF">›</button></div>
+        <h1 data-i18n="h1">Mesa de cabeceira à tua maneira</h1>
+        <p data-i18n="lede">Cada gomo encaixa e desencaixa. Escolhe um tecido e toca nos gomos para os trocar. Arrasta para rodar, aperta para aproximar.</p>
+        <a class="cta" href="#orcamento"><span data-i18n="cta">Pedir orçamento</span> <span aria-hidden="true">›</span></a>
       </div>
       <div></div>
       <aside class="side">
         <div><div class="fname" id="fname"></div><div class="fref" id="fref"></div></div>
-        <p class="lab">Escolhe o tecido</p>
+        <p class="lab" data-i18n="chooseFabric">Escolhe o tecido</p>
         <div class="swatches" id="swatches"></div>
-        <p class="lab">Pincel</p>
-        <div class="seg" role="group" aria-label="Modo de pintura">
-          <button id="mGomo" aria-pressed="true">Um gomo</button>
-          <button id="mGaveta" aria-pressed="false">Gaveta inteira</button>
-          <button id="mTirar" aria-pressed="false">Tirar e pôr</button>
+        <p class="lab" data-i18n="brush">Pincel</p>
+        <div class="seg" role="group" aria-label="Modo de pintura" data-i18n-aria="brushAria">
+          <button id="mGomo" aria-pressed="true" data-i18n="mOne">Um gomo</button>
+          <button id="mGaveta" aria-pressed="false" data-i18n="mDrawer">Gaveta inteira</button>
+          <button id="mTirar" aria-pressed="false" data-i18n="mRemove">Tirar e pôr</button>
         </div>
       </aside>
     </div>
     <div class="over bottom">
-      <p class="hint" id="hint">90 gomos · 30 por gaveta</p>
+      <p class="hint" id="hint" data-i18n="hint">90 gomos · 30 por gaveta</p>
       <div class="mid">
-        <p class="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
+        <p class="tag" data-i18n-html="tag">Gomos que encaixam.<br>Cores que escolhes.</p>
         <div class="acts">
-          <div class="dwg" role="group" aria-label="Abrir gavetas"><span>Abrir</span><button class="ic" data-dw="0" aria-pressed="false">Cima</button><button class="ic" data-dw="1" aria-pressed="false">Meio</button><button class="ic" data-dw="2" aria-pressed="false">Baixo</button><button class="ic" data-dw="all" aria-pressed="false">Todas</button></div>
-          <button class="ic" id="spin" aria-pressed="false">Rodar sozinha</button>
+          <div class="dwg" role="group" aria-label="Abrir gavetas" data-i18n-aria="dwAria"><span data-i18n="dwOpen">Abrir</span><button class="ic" data-dw="0" aria-pressed="false" data-i18n="dwTop">Cima</button><button class="ic" data-dw="1" aria-pressed="false" data-i18n="dwMid">Meio</button><button class="ic" data-dw="2" aria-pressed="false" data-i18n="dwBot">Baixo</button><button class="ic" data-dw="all" aria-pressed="false" data-i18n="dwAll">Todas</button></div>
+          <button class="ic" id="spin" aria-pressed="false" data-i18n="spin">Rodar sozinha</button>
         </div>
       </div>
-      <button class="nextth" id="nextTh" aria-label="Ver o tecido seguinte"><span id="nextName"></span></button>
+      <button class="nextth" id="nextTh" aria-label="Ver o tecido seguinte" data-i18n-aria="nextTh"><span id="nextName"></span></button>
     </div>
   </section>
 
   <div class="more">
     <section class="card" id="composicoes">
-      <h2>Composições rápidas</h2>
+      <h2 data-i18n="patterns">Composições rápidas</h2>
       <div class="chips">
-        <button class="chip" data-p="liso">Liso</button>
-        <button class="chip" data-p="riscas">Alternado</button>
-        <button class="chip" data-p="faixa">Faixa frontal</button>
-        <button class="chip" data-p="gavetas">Uma cor por gaveta</button>
-        <button class="chip" data-p="degrade">Degradê</button>
-        <button class="chip" data-p="aleatorio">Aleatório</button>
+        <button class="chip" data-p="liso" data-i18n="pPlain">Liso</button>
+        <button class="chip" data-p="riscas" data-i18n="pAlt">Alternado</button>
+        <button class="chip" data-p="faixa" data-i18n="pBand">Faixa frontal</button>
+        <button class="chip" data-p="gavetas" data-i18n="pPerDrawer">Uma cor por gaveta</button>
+        <button class="chip" data-p="degrade" data-i18n="pGrad">Degradê</button>
+        <button class="chip" data-p="aleatorio" data-i18n="pRandom">Aleatório</button>
       </div>
     </section>
     <section class="card" id="acabamentos">
-      <h2>Acabamento dos aros, base e gavetas</h2>
-      <p class="total">Muda os aros, a base e o interior das gavetas ao mesmo tempo.</p>
+      <h2 data-i18n="finishTitle">Acabamento dos aros, base e gavetas</h2>
+      <p class="total" data-i18n="finishLede">Muda os aros, a base e o interior das gavetas ao mesmo tempo.</p>
       <div id="rings"></div>
     </section>
     <section class="card" id="pedra">
-      <h2>Pedra do tampo</h2>
+      <h2 data-i18n="stoneTitle">Pedra do tampo</h2>
       <div class="chips rings" id="stones"></div>
     </section>
     <section class="card">
-      <h2>Gomos necessários</h2>
+      <h2 data-i18n="billTitle">Gomos necessários</h2>
       <ul class="bill" id="bill"></ul>
       <p class="total" id="total"></p>
-      <button class="reset" id="reset">Voltar à versão original</button>
+      <button class="reset" id="reset" data-i18n="reset">Voltar à versão original</button>
     </section>
     <section class="card" id="orcamento">
-      <h2>Pedir orçamento</h2>
-      <p class="total">Envia-nos este código ou link e ficamos com a tua configuração exata.</p>
-      <input id="code" class="code" readonly aria-label="Código da configuração">
+      <h2 data-i18n="quoteTitle">Pedir orçamento</h2>
+      <p class="total" data-i18n="quoteLede">Envia-nos este código ou link e ficamos com a tua configuração exata.</p>
+      <input id="code" class="code" readonly aria-label="Código da configuração" data-i18n-aria="codeAria">
       <div class="chips">
-        <button class="chip" id="copyReq">Copiar pedido</button>
-        <button class="chip" id="copyLink">Copiar link</button>
-        <button class="chip" id="share" hidden>Partilhar</button>
+        <button class="chip" id="copyReq" data-i18n="copyReq">Copiar pedido</button>
+        <button class="chip" id="copyLink" data-i18n="copyLink">Copiar link</button>
+        <button class="chip" id="share" hidden data-i18n="share">Partilhar</button>
       </div>
       <p class="total" id="copied" role="status" aria-live="polite"></p>
     </section>
@@ -204,41 +208,75 @@ nav.pillnav a:not(:first-child):hover{color:#fff}
 <script>
 /* ---------- dados ---------- */
 const FABRICS=[
-  {id:"natural",n:"Bouclé natural",c:"#EAE1D3"},
-  {id:"t01",n:"Castanho acinzentado",c:"#756052",ref:"Amostra 01"},
-  {id:"t02",n:"Vermelho",c:"#770714",ref:"Amostra 02"},
-  {id:"t03",n:"Roxo",c:"#34163E",ref:"Amostra 03"},
-  {id:"t04",n:"Preto",c:"#0B0B0B",ref:"Amostra 04"},
-  {id:"t05",n:"Terracota",c:"#93371A",ref:"Amostra 05"},
-  {id:"t06",n:"Verde garrafa",c:"#074B41",ref:"Amostra 06"},
-  {id:"t07",n:"Grafite",c:"#262626",ref:"Amostra 07"},
-  {id:"t08",n:"Mostarda",c:"#BD8126",ref:"Amostra 08"},
-  {id:"t09",n:"Castanho chocolate",c:"#6C554C",ref:"Amostra 09"},
-  {id:"t10",n:"Azul",c:"#43608B",ref:"Amostra 10"},
-  {id:"t11",n:"Verde musgo",c:"#3F5022",ref:"Amostra 11"},
-  {id:"t12",n:"Camelo",c:"#8F745D",ref:"Amostra 12"},
-  {id:"t13",n:"Bordeaux",c:"#832233",ref:"Amostra 13"},
+  {id:"natural",n:"Bouclé natural",en:"Natural bouclé",c:"#EAE1D3"},
+  {id:"t01",n:"Castanho acinzentado",en:"Greyish brown",c:"#756052",ref:"Amostra 01"},
+  {id:"t02",n:"Vermelho",en:"Red",c:"#770714",ref:"Amostra 02"},
+  {id:"t03",n:"Roxo",en:"Purple",c:"#34163E",ref:"Amostra 03"},
+  {id:"t04",n:"Preto",en:"Black",c:"#0B0B0B",ref:"Amostra 04"},
+  {id:"t05",n:"Terracota",en:"Terracotta",c:"#93371A",ref:"Amostra 05"},
+  {id:"t06",n:"Verde garrafa",en:"Bottle green",c:"#074B41",ref:"Amostra 06"},
+  {id:"t07",n:"Grafite",en:"Graphite",c:"#262626",ref:"Amostra 07"},
+  {id:"t08",n:"Mostarda",en:"Mustard",c:"#BD8126",ref:"Amostra 08"},
+  {id:"t09",n:"Castanho chocolate",en:"Chocolate brown",c:"#6C554C",ref:"Amostra 09"},
+  {id:"t10",n:"Azul",en:"Blue",c:"#43608B",ref:"Amostra 10"},
+  {id:"t11",n:"Verde musgo",en:"Moss green",c:"#3F5022",ref:"Amostra 11"},
+  {id:"t12",n:"Camelo",en:"Camel",c:"#8F745D",ref:"Amostra 12"},
+  {id:"t13",n:"Bordeaux",en:"Burgundy",c:"#832233",ref:"Amostra 13"},
 ];
 const FINISHES=[
-  {id:"carvalho",n:"Carvalho",c:"#B98C57",g:"Madeiras",tex:"carvalho"},
-  {id:"nogueira",n:"Nogueira",c:"#5A3A27",g:"Madeiras",tex:"nogueira"},
-  {id:"pauferro",n:"Pau-ferro",c:"#3B221A",g:"Madeiras",tex:"pauferro"},
-  {id:"freixo",n:"Freixo",c:"#D8BE94",g:"Madeiras",tex:"freixo"},
-  {id:"cerejeira",n:"Cerejeira",c:"#A65C3A",g:"Madeiras",tex:"cerejeira"},
-  {id:"ebano",n:"Ébano",c:"#231C18",g:"Madeiras",tex:"ebano"},
-  {id:"carvalho_lavado",n:"Carvalho lavado",c:"#D5C2A3",g:"Lavados",tex:"carvalho_lavado"},
-  {id:"nogueira_lavada",n:"Nogueira lavada",c:"#957A67",g:"Lavados",tex:"nogueira_lavada"},
-  {id:"cinza_lavado",n:"Cinza lavado",c:"#B3B0AA",g:"Lavados",tex:"cinza_lavado"},
-  {id:"branco_lavado",n:"Branco lavado",c:"#E8E3DA",g:"Lavados",tex:"branco_lavado"},
-  {id:"terracota",n:"Terracota",c:"#A64A2B",g:"Lacados"},
-  {id:"preto",n:"Preto",c:"#1E1C1B",g:"Lacados"},
-  {id:"branco",n:"Branco",c:"#EFEDE8",g:"Lacados"},
-  {id:"latao",n:"Latão",c:"#B8955C",g:"Lacados",metal:true},
+  {id:"carvalho",n:"Carvalho",en:"Oak",c:"#B98C57",g:"Madeiras",tex:"carvalho"},
+  {id:"nogueira",n:"Nogueira",en:"Walnut",c:"#5A3A27",g:"Madeiras",tex:"nogueira"},
+  {id:"pauferro",n:"Pau-ferro",en:"Pau ferro",c:"#3B221A",g:"Madeiras",tex:"pauferro"},
+  {id:"freixo",n:"Freixo",en:"Ash",c:"#D8BE94",g:"Madeiras",tex:"freixo"},
+  {id:"cerejeira",n:"Cerejeira",en:"Cherry",c:"#A65C3A",g:"Madeiras",tex:"cerejeira"},
+  {id:"ebano",n:"Ébano",en:"Ebony",c:"#231C18",g:"Madeiras",tex:"ebano"},
+  {id:"carvalho_lavado",n:"Carvalho lavado",en:"Washed oak",c:"#D5C2A3",g:"Lavados",tex:"carvalho_lavado"},
+  {id:"nogueira_lavada",n:"Nogueira lavada",en:"Washed walnut",c:"#957A67",g:"Lavados",tex:"nogueira_lavada"},
+  {id:"cinza_lavado",n:"Cinza lavado",en:"Grey wash",c:"#B3B0AA",g:"Lavados",tex:"cinza_lavado"},
+  {id:"branco_lavado",n:"Branco lavado",en:"White wash",c:"#E8E3DA",g:"Lavados",tex:"branco_lavado"},
+  {id:"terracota",n:"Terracota",en:"Terracotta",c:"#A64A2B",g:"Lacados"},
+  {id:"preto",n:"Preto",en:"Black",c:"#1E1C1B",g:"Lacados"},
+  {id:"branco",n:"Branco",en:"White",c:"#EFEDE8",g:"Lacados"},
+  {id:"latao",n:"Latão",en:"Brass",c:"#B8955C",g:"Lacados",metal:true},
 ];
 const STONES=[
   {id:"carrara",n:"Carrara",c:"#E8E8E6"},{id:"calacatta",n:"Calacatta Gold",c:"#F2EBDD"},{id:"statuario",n:"Statuario",c:"#F0F0EE"},
-  {id:"nero",n:"Nero Marquina",c:"#111112"},{id:"emperador",n:"Emperador",c:"#6B4430"},{id:"verde",n:"Verde Alpi",c:"#123D32"},{id:"travertino",n:"Travertino",c:"#D7C7AA"},
+  {id:"nero",n:"Nero Marquina",c:"#111112"},{id:"emperador",n:"Emperador",c:"#6B4430"},{id:"verde",n:"Verde Alpi",c:"#123D32"},{id:"travertino",n:"Travertino",en:"Travertine",c:"#D7C7AA"},
 ];
+/* ---------- línguas: português (pt-PT) e inglês britânico (en-GB) ---------- */
+const T={
+ pt:{title:"Configurador de Gomos",heroAria:"Pré-visualização 3D da mesa",viewAria:"Mesa de cabeceira redonda em 3D com três gavetas estofadas em gomos",navAria:"Secções",
+  navTable:"Mesa",navPatterns:"Composições",navFinishes:"Acabamentos",navQuote:"Orçamento",prevF:"Tecido anterior",nextF:"Tecido seguinte",
+  h1:"Mesa de cabeceira à tua maneira",lede:"Cada gomo encaixa e desencaixa. Escolhe um tecido e toca nos gomos para os trocar. Arrasta para rodar, aperta para aproximar.",
+  cta:"Pedir orçamento",chooseFabric:"Escolhe o tecido",brush:"Pincel",brushAria:"Modo de pintura",mOne:"Um gomo",mDrawer:"Gaveta inteira",mRemove:"Tirar e pôr",
+  hint:"90 gomos · 30 por gaveta",tag:"Gomos que encaixam.<br>Cores que escolhes.",dwAria:"Abrir gavetas",dwOpen:"Abrir",dwTop:"Cima",dwMid:"Meio",dwBot:"Baixo",dwAll:"Todas",
+  spin:"Rodar sozinha",nextTh:"Ver o tecido seguinte",patterns:"Composições rápidas",pPlain:"Liso",pAlt:"Alternado",pBand:"Faixa frontal",pPerDrawer:"Uma cor por gaveta",pGrad:"Degradê",pRandom:"Aleatório",
+  finishTitle:"Acabamento dos aros, base e gavetas",finishLede:"Muda os aros, a base e o interior das gavetas ao mesmo tempo.",stoneTitle:"Pedra do tampo",
+  billTitle:"Gomos necessários",reset:"Voltar à versão original",quoteTitle:"Pedir orçamento",quoteLede:"Envia-nos este código ou link e ficamos com a tua configuração exata.",
+  codeAria:"Código da configuração",copyReq:"Copiar pedido",copyLink:"Copiar link",share:"Partilhar",
+  gWoods:"Madeiras",gWashed:"Lavados",gLacquer:"Lacados",sample:"Amostra",bocoteBoucle:"Bouclé da Bocote",
+  copiedReq:"Pedido copiado. Cola numa mensagem para nos enviares.",copiedLink:"Link copiado.",
+  fabric1:"tecido",fabricN:"tecidos",panels:"gomos",top:"tampo",
+  sumTitle:"Pedido de orçamento — Mesa de cabeceira Bocote",sumFinish:"Acabamento (aros, base e gavetas)",sumStone:"Pedra do tampo",sumCode:"Código",
+  shareTitle:"Mesa de cabeceira Bocote",errModel:"Não foi possível carregar o modelo 3D.",err3d:"Não foi possível abrir a vista 3D neste dispositivo. Experimenta noutro navegador."},
+ en:{title:"Bocote Bedside Configurator",heroAria:"3D preview of the table",viewAria:"Round bedside table in 3D with three drawers upholstered in panels",navAria:"Sections",
+  navTable:"Table",navPatterns:"Patterns",navFinishes:"Finishes",navQuote:"Quote",prevF:"Previous fabric",nextF:"Next fabric",
+  h1:"A bedside table made your way",lede:"Every panel clicks in and out. Pick a fabric and tap the panels to change them. Drag to rotate, pinch to zoom.",
+  cta:"Request a quote",chooseFabric:"Choose a fabric",brush:"Brush",brushAria:"Painting mode",mOne:"One panel",mDrawer:"Whole drawer",mRemove:"Remove & refit",
+  hint:"90 panels · 30 per drawer",tag:"Panels that click into place.<br>Colours you choose.",dwAria:"Open drawers",dwOpen:"Open",dwTop:"Top",dwMid:"Middle",dwBot:"Bottom",dwAll:"All",
+  spin:"Auto-rotate",nextTh:"See the next fabric",patterns:"Quick patterns",pPlain:"Plain",pAlt:"Alternating",pBand:"Front band",pPerDrawer:"One colour per drawer",pGrad:"Gradient",pRandom:"Random",
+  finishTitle:"Finish for the rings, base and drawers",finishLede:"Changes the rings, the base and the drawer interiors all at once.",stoneTitle:"Stone top",
+  billTitle:"Panels needed",reset:"Back to the original",quoteTitle:"Request a quote",quoteLede:"Send us this code or link and we will have your exact configuration.",
+  codeAria:"Configuration code",copyReq:"Copy request",copyLink:"Copy link",share:"Share",
+  gWoods:"Woods",gWashed:"Washed",gLacquer:"Lacquered",sample:"Sample",bocoteBoucle:"Bocote bouclé",
+  copiedReq:"Request copied. Paste it into a message to send it to us.",copiedLink:"Link copied.",
+  fabric1:"fabric",fabricN:"fabrics",panels:"panels",top:"top",
+  sumTitle:"Quote request — Bocote bedside table",sumFinish:"Finish (rings, base and drawers)",sumStone:"Stone top",sumCode:"Code",
+  shareTitle:"Bocote bedside table",errModel:"The 3D model could not be loaded.",err3d:"The 3D view could not open on this device. Please try another browser."}
+};
+let LANG=(()=>{if(/(^#|&)en\b/.test(location.hash))return"en";if(/(^#|&)pt\b/.test(location.hash))return"pt";try{return localStorage.getItem("mesa-lang")==="en"?"en":"pt";}catch(e){return"pt";}})();
+const t=k=>T[LANG][k]||T.pt[k];
+const nm=f=>LANG==="en"&&f.en?f.en:f.n;
 const finOf=id=>FINISHES.find(f=>f.id===id)||FINISHES[10],stoneOf=id=>STONES.find(f=>f.id===id)||STONES[0];
 const accStyle=f=>{const k=f.tex||f.id;return window.ACAB&&ACAB[k]?`background-color:${f.c};background-image:url(${ACAB[k]})`:`background-color:${f.c}`;};
 const N=30,D=3,STEP=2*Math.PI/N;
@@ -258,11 +296,11 @@ function tone(hex){
   return[`hsl(${h.toFixed(0)} ${(sat*100).toFixed(0)}% ${(hl*100).toFixed(0)}%)`,`hsl(${h.toFixed(0)} ${(sat*85).toFixed(0)}% ${(hl*45).toFixed(0)}%)`];
 }
 function renderSw(){
-  swEl.innerHTML=FABRICS.map(f=>`<button class="sw" data-f="${f.id}" aria-pressed="${f.id===cur}" aria-label="${f.n}" title="${f.n}"><i style="${swStyle(f)}"></i></button>`).join("");
+  swEl.innerHTML=FABRICS.map(f=>`<button class="sw" data-f="${f.id}" aria-pressed="${f.id===cur}" aria-label="${nm(f)}" title="${nm(f)}"><i style="${swStyle(f)}"></i></button>`).join("");
   const f=fab(cur),i=FABRICS.indexOf(f),nx=FABRICS[(i+1)%FABRICS.length];
-  document.getElementById("fname").textContent=f.n;
-  document.getElementById("fref").textContent=f.ref||"Bouclé da Bocote";
-  const th=document.getElementById("nextTh");th.style.cssText=swStyle(nx)+";background-size:cover";document.getElementById("nextName").textContent=nx.n;
+  document.getElementById("fname").textContent=nm(f);
+  document.getElementById("fref").textContent=f.ref?f.ref.replace("Amostra",t("sample")):t("bocoteBoucle");
+  const th=document.getElementById("nextTh");th.style.cssText=swStyle(nx)+";background-size:cover";document.getElementById("nextName").textContent=nm(nx);
   const[hi,lo]=tone(f.c);document.documentElement.style.setProperty("--hi",hi);document.documentElement.style.setProperty("--lo",lo);
 }
 swEl.addEventListener("click",e=>{const b=e.target.closest(".sw");if(!b)return;cur=b.dataset.f;renderSw();});
@@ -283,35 +321,35 @@ function decode(c){
   if(!fin||!stone||ribs.flat().some(x=>!x))return null;
   return{ribs,fin:fin.id,stone:stone.id};
 }
-const linkFor=()=>location.href.split("#")[0]+"#c="+encode();
+const linkFor=()=>location.href.split("#")[0]+"#c="+encode()+(LANG==="en"?"&en":"");
 function summary(){
   const cnt={};st.ribs.flat().forEach(id=>cnt[id]=(cnt[id]||0)+1);
-  const lines=FABRICS.filter(f=>cnt[f.id]).map(f=>`- ${f.n}: ${cnt[f.id]} gomos`);
-  return `Pedido de orçamento — Mesa de cabeceira Bocote\nAcabamento (aros, base e gavetas): ${finOf(st.fin).n}\nPedra do tampo: ${stoneOf(st.stone).n}\n${lines.join("\n")}\nCódigo: ${encode()}\nLink: ${linkFor()}`;
+  const lines=FABRICS.filter(f=>cnt[f.id]).map(f=>`- ${nm(f)}: ${cnt[f.id]} ${t("panels")}`);
+  return `${t("sumTitle")}\n${t("sumFinish")}: ${nm(finOf(st.fin))}\n${t("sumStone")}: ${nm(stoneOf(st.stone))}\n${lines.join("\n")}\n${t("sumCode")}: ${encode()}\nLink: ${linkFor()}`;
 }
 const codeEl=document.getElementById("code"),copiedEl=document.getElementById("copied");
 async function copy(t,msg){
   try{await navigator.clipboard.writeText(t);}catch(e){codeEl.value=t;codeEl.select();try{document.execCommand("copy");}catch(_){}codeEl.value=encode();}
   copiedEl.textContent=msg;
 }
-document.getElementById("copyReq").onclick=()=>copy(summary(),"Pedido copiado. Cola numa mensagem para nos enviares.");
-document.getElementById("copyLink").onclick=()=>copy(linkFor(),"Link copiado.");
+document.getElementById("copyReq").onclick=()=>copy(summary(),t("copiedReq"));
+document.getElementById("copyLink").onclick=()=>copy(linkFor(),t("copiedLink"));
 const shBtn=document.getElementById("share");
-if(navigator.share){shBtn.hidden=false;shBtn.onclick=()=>navigator.share({title:"Mesa de cabeceira Bocote",text:summary()}).catch(()=>{});}
+if(navigator.share){shBtn.hidden=false;shBtn.onclick=()=>navigator.share({title:t("shareTitle"),text:summary()}).catch(()=>{});}
 (function(){const m=/[#&]c=([^&]+)/.exec(location.hash);const d=m&&decode(decodeURIComponent(m[1]));if(d)st=d;})();
 const rEl=document.getElementById("rings"),pEl=document.getElementById("stones");
 function renderRings(){
-  rEl.innerHTML=["Madeiras","Lavados","Lacados"].map(g=>`<div class="grp"><h3>${g}</h3><div class="chips">${FINISHES.filter(f=>f.g===g).map(f=>`<button class="chip" data-r="${f.id}" aria-pressed="${f.id===st.fin}"><i style="${accStyle(f)}"></i>${f.n}</button>`).join("")}</div></div>`).join("");
-  pEl.innerHTML=STONES.map(f=>`<button class="chip" data-s="${f.id}" aria-pressed="${f.id===st.stone}"><i style="${accStyle(f)}"></i>${f.n}</button>`).join("");
+  rEl.innerHTML=[["Madeiras","gWoods"],["Lavados","gWashed"],["Lacados","gLacquer"]].map(([g,gk])=>`<div class="grp"><h3>${t(gk)}</h3><div class="chips">${FINISHES.filter(f=>f.g===g).map(f=>`<button class="chip" data-r="${f.id}" aria-pressed="${f.id===st.fin}"><i style="${accStyle(f)}"></i>${nm(f)}</button>`).join("")}</div></div>`).join("");
+  pEl.innerHTML=STONES.map(f=>`<button class="chip" data-s="${f.id}" aria-pressed="${f.id===st.stone}"><i style="${accStyle(f)}"></i>${nm(f)}</button>`).join("");
 }
 rEl.addEventListener("click",e=>{const b=e.target.closest("[data-r]");if(!b)return;st.fin=b.dataset.r;save();renderRings();apply();});
 pEl.addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(!b)return;st.stone=b.dataset.s;save();renderRings();apply();});
 function renderBill(){
   const cnt={};st.ribs.flat().forEach(id=>cnt[id]=(cnt[id]||0)+1);
   const rows=FABRICS.filter(f=>cnt[f.id]);
-  document.getElementById("bill").innerHTML=rows.map(f=>`<li><i style="${swStyle(f)}"></i><span>${f.n}</span><b>${cnt[f.id]}</b></li>`).join("");
+  document.getElementById("bill").innerHTML=rows.map(f=>`<li><i style="${swStyle(f)}"></i><span>${nm(f)}</span><b>${cnt[f.id]}</b></li>`).join("");
   codeEl.value=encode();copiedEl.textContent="";
-  document.getElementById("total").textContent=`${rows.length} ${rows.length===1?"tecido":"tecidos"} · ${N*D} gomos · ${finOf(st.fin).n.toLowerCase()} · tampo ${stoneOf(st.stone).n}`;
+  document.getElementById("total").textContent=LANG==="en"?`${rows.length} ${rows.length===1?t("fabric1"):t("fabricN")} · ${N*D} ${t("panels")} · ${nm(finOf(st.fin)).toLowerCase()} · ${nm(stoneOf(st.stone))} ${t("top")}`:`${rows.length} ${rows.length===1?t("fabric1"):t("fabricN")} · ${N*D} ${t("panels")} · ${nm(finOf(st.fin)).toLowerCase()} · ${t("top")} ${nm(stoneOf(st.stone))}`;
 }
 document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
   const p=b.dataset.p,alt=cur==="natural"?"t12":"natural";
@@ -443,7 +481,7 @@ function init3D(){
   const bin=atob(window.MESA_GLB),buf=new Uint8Array(bin.length);
   for(let k=0;k<bin.length;k++)buf[k]=bin.charCodeAt(k);
   new THREE.GLTFLoader().parse(buf.buffer,"",onModel,e=>{
-    document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:"Não foi possível carregar o modelo 3D."}));
+    document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:t("errModel")}));
   });
 
   // animação: gomo sai, espera e volta a encaixar (a cor troca quando está fora)
@@ -526,9 +564,18 @@ function init3D(){
   (function loop(){stepAnim(performance.now());controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);})();
 }
 
-renderSw();renderRings();
+renderSw();renderRings();applyLang();
+function applyLang(){
+  document.documentElement.lang=LANG==="en"?"en-GB":"pt-PT";document.title=t("title");
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>el.innerHTML=t(el.dataset.i18nHtml));
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.i18nAria)));
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG));
+  renderSw();renderRings();renderBill();
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;try{localStorage.setItem("mesa-lang",LANG);}catch(e){}applyLang();});
 try{init3D();}catch(err){
-  document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:"Não foi possível abrir a vista 3D neste dispositivo. Experimenta noutro navegador."}));
+  document.getElementById("view").replaceWith(Object.assign(document.createElement("p"),{className:"fallback",textContent:t("err3d")}));
 }
 apply();
 </script>

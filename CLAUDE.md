@@ -22,6 +22,7 @@ e diz o que mudaste e porquê antes de entrar em detalhe técnico.
 - Acabamentos (madeiras, lavados, lacados) mudam aros, base e interior das gavetas ao mesmo tempo; pedra do tampo à escolha (Carrara, Calacatta Gold, etc.), tampo maciço com 20 mm assente diretamente sobre os gomos (sem aro). Texturas geradas por `blender/acabamentos.py` → `acabamentos-3d.js`.
 - Há também animação de tirar/pôr gomo, gavetas que abrem uma a uma (Cima, Meio, Baixo) ou todas, também ao toque no puxador e pedido de orçamento (código + link).
 - Toque num gomo pinta-o; modo "Gaveta inteira" pinta a gaveta; composições rápidas; cor dos aros.
+- Site em duas línguas: português (pt-PT) e inglês britânico (en-GB), com botão PT | EN no topo. Textos no objeto `T`; nomes em inglês no campo `en` de cada tecido, acabamento e pedra. Link direto em inglês: acrescentar `#en`.
 - Lista de gomos necessários por tecido. Configuração guardada no `localStorage` do navegador.
 
 ## Medidas usadas no modelo (metros, aproximadas)
